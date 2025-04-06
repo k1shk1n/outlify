@@ -26,7 +26,7 @@ into any project. The second key aspect of **Outlify** is its beautiful and user
 log formatting, designed to enhance readability and provide a pleasant experience
 for developers and their users.
 
-# Install
+## Install
 **Outlify** is available as a Python package and can be easily installed via `pip` from [PyPI](https://pypi.org/project/outlify/). 
 To install, simply run:
 ```bash
@@ -34,8 +34,8 @@ pip install outlify
 ```
 This will automatically install the latest version of **Outlify**.
 
-# Usage
-## Panels
+## Usage
+### Panels
 <details>
     <summary><kbd>demo</kbd></summary>
 
@@ -52,5 +52,5 @@ from outlify.panel import Panel
 print(Panel('A very important text', title='Warning'))
 ```
 
-# License
+## License
 Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](LICENSE)
