@@ -8,7 +8,7 @@ authors = [
     { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
 ]
 maintainers = [
-  { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
+    { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
