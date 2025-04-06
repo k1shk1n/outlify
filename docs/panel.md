@@ -5,6 +5,11 @@ visually distinct panels. This is especially useful for emphasizing important in
 in your cli outputs. Panels can have titles, borders, and various formatting styles,
 making them perfect for logging warnings, errors, or key messages.
 
+To view the demo for the **Panel** module use:
+```bash
+python -m outlify.panel
+```
+
 <div align="center">
 
 ## Quicklinks
