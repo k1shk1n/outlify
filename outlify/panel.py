@@ -19,14 +19,20 @@ class PanelBase(ABC):
         border_style = self._parse_border_style(border_style)
         self.width = self._resolve_width(width)
         self.header = self.get_header(
-            title, align=Align(title_align.lower()), width=self.width,
+            title, align=self._resolve_title_align(title_align), width=self.width,
             left=border_style.lt, char=border_style.headers, right=border_style.rt
         )
         self.footer = self.get_header(
-            subtitle, align=Align(subtitle_align.lower()), width=self.width,
+            subtitle, align=self._resolve_title_align(subtitle_align), width=self.width,
             left=border_style.lb, char=border_style.headers, right=border_style.rb
         )
         self.content = self.get_content(content, width=self.width, char=border_style.sides)
+
+    @staticmethod
+    def _resolve_title_align(align: Union[str, Align]) -> Align:
+        if isinstance(align, Align):
+            return align
+        return Align(align.lower())
 
     @abstractmethod
     def get_content(self, content: str, *, width: int, char: str) -> str:
