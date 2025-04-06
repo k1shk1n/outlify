@@ -3,7 +3,7 @@ from typing import Any, Mapping, Iterable, Optional, Union
 import shutil
 import textwrap
 
-from outfily.styles import Align, BorderStyle
+from outlify.styles import Align, BorderStyle
 
 
 __all__ = ['Panel', 'ParamsPanel']
