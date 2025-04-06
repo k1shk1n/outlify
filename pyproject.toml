@@ -2,12 +2,22 @@
 name = "outlify"
 version = "0.1.0"
 description = "Add your description here"
+license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
 ]
 requires-python = ">=3.10"
 dependencies = []
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+output-format = "github"
+
+[tool.ruff.lint]
+# See list of rules at: https://docs.astral.sh/ruff/rules/
+select = ["E", "F", "W", "C90"]
 
 [build-system]
 requires = ["hatchling"]
