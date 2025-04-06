@@ -19,8 +19,14 @@ classifiers = [
     "Topic :: Utilities",
 ]
 requires-python = ">=3.10"
-dependencies = []
 repository = "https://github.com/k1shk1n/outlify"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    'ruff==0.11.4',
+    'pytest==8.3.5',
+]
 
 [tool.ruff]
 line-length = 120
