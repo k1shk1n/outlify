@@ -1,7 +1,7 @@
 [project]
 name = "outlify"
-version = "0.1.0"
-description = "Structured CLI output — beautifully, simply, and dependency-free"
+version = "0.1.1"
+description = "Structured cli output — beautifully, simply, and dependency-free"
 license = "MIT"
 readme = "README.md"
 authors = [
