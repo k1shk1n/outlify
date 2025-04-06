@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = []
+packages = [{include = "outlify"}]
 
 [build-system]
 requires = ["hatchling"]
