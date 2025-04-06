@@ -46,7 +46,7 @@ For example, to view the demo for the **Panel** module:
 python -m outlify.panel
 ```
 
-### Panels
+### Panels 
 To highlight important text by displaying it within a panel, use `Panel`. Here's how:
 ```python
 from outlify.panel import Panel
@@ -61,6 +61,8 @@ from outlify.panel import ParamsPanel
 parameters = {'parameter1': 'value1', 'parameter2': 'value2'}
 print(ParamsPanel(parameters, title='Startup Parameters'))
 ```
+
+For more details on how to use Panels, see [Panel](docs/panel.md)
 
 ## License
 Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](LICENSE)
