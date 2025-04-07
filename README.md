@@ -1,21 +1,21 @@
 <div align="center">
 
-<!-- TODO: add banner -->
+<img src="https://raw.githubusercontent.com/k1shk1n/outlify/main/assets/header.svg" alt="outlify header" width="600">
 
-[![PyPI](https://img.shields.io/pypi/v/outlify)](https://pypi.org/project/outlify/)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/outlify)
-![Build](https://github.com/k1shk1n/outlify/actions/workflows/checks.yaml/badge.svg)
-![Repo Size](https://img.shields.io/github/repo-size/k1shk1n/outlify)
-[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-
-
-# outlify
 Structured cli output — beautifully, simply, and dependency-free.
 
 [Overview](#overview) •
 [Install](#install) •
 [Usage](#usage) •
 [License](#license)
+
+<img src="https://raw.githubusercontent.com/k1shk1n/outlify/main/assets/footer.svg" alt="outlify footer" width="600">
+
+[![PyPI](https://img.shields.io/pypi/v/outlify)](https://pypi.org/project/outlify/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/outlify)
+![Build](https://github.com/k1shk1n/outlify/actions/workflows/checks.yaml/badge.svg)
+![Repo Size](https://img.shields.io/github/repo-size/k1shk1n/outlify)
+[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 </div>
 
