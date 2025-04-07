@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="/assets/header.svg" alt="outlify header" width="500">
+<img src="/assets/header.svg" alt="outlify header" width="600">
 
 Structured cli output — beautifully, simply, and dependency-free.
 
@@ -9,7 +9,7 @@ Structured cli output — beautifully, simply, and dependency-free.
 [Usage](#usage) •
 [License](#license)
 
-<img src="/assets/footer.svg" alt="outlify footer" width="500">
+<img src="/assets/footer.svg" alt="outlify footer" width="600">
 
 [![PyPI](https://img.shields.io/pypi/v/outlify)](https://pypi.org/project/outlify/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/outlify)
