@@ -22,7 +22,7 @@ python -m outlify.panel
 │ This is just a simple text panel.                  │
 ╰────────────────────────────────── Text Panel Demo ─╯
 
-...
+Continued...
 ```
 
 </div>
