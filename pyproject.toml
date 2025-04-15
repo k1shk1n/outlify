@@ -1,8 +1,14 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
 [project]
 name = "outlify"
 version = "0.2.0"
 description = "Structured cli output — beautifully, simply, and dependency-free"
 license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 authors = [
     { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
@@ -20,6 +26,11 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 repository = "https://github.com/k1shk1n/outlify"
+keywords = [
+    "cli", "output", "logs", "utilities",
+    "developer-tools",
+    "outlify"
+]
 dependencies = []
 
 [project.optional-dependencies]
@@ -27,6 +38,13 @@ dev = [
     'ruff==0.11.4',
     'pytest==8.3.5',
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/k1shk1n/outlify"
+"Source" = "https://github.com/k1shk1n/outlify"
+"Bug Tracker" = "https://github.com/k1shk1n/outlify/issues"
+"Documentation" = "https://github.com/k1shk1n/outlify/blob/main/README.md"
+
 
 [tool.ruff]
 line-length = 120
@@ -36,7 +54,3 @@ output-format = "github"
 [tool.ruff.lint]
 # See list of rules at: https://docs.astral.sh/ruff/rules/
 select = ["E", "F", "W", "C90"]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
