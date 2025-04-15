@@ -11,6 +11,8 @@ repo_name: outlify
 # Configuration
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
   features:
     - navigation.instant
     - navigation.instant.prefetch
