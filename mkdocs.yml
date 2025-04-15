@@ -1,12 +1,14 @@
 # Project information
 site_name: Outlify
 site_author: Vladislav Kishkin
-site_description: Lalala
+site_description: >-
+  Structured cli output — beautifully, simply, and dependency-free
 
 # Repository
 repo_url: https://github.com/k1shk1n/outlify
 repo_name: outlify
 
+# Configuration
 theme:
   name: material
   features:
@@ -19,6 +21,7 @@ theme:
     - navigation.path
     - toc.follow
     - navigation.top
+    - navigation.footer
     - content.code.copy
     - content.code.select
   palette:
@@ -46,6 +49,14 @@ theme:
       toggle:
         icon: material/lightbulb-outline
         name: Switch to system preference
+
+# Additional configuration
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/k1shk1n/outlify
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/outlify/
 
 # Extensions
 markdown_extensions:
