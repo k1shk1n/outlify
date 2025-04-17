@@ -36,6 +36,7 @@ jobs:
 
       - name: Deploy versioned docs
         run: |
+          source .venv/bin/activate
           VERSION=${{ steps.get_version.outputs.VERSION }}
           mike deploy "$VERSION" --update-aliases latest stable
           mike set-default "$VERSION"

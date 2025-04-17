@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "outlify"
-version = "0.3.1"
+version = "0.3.2"
 description = "Structured cli output — beautifully, simply, and dependency-free"
 license = "MIT"
 license-files = ["LICENSE"]
