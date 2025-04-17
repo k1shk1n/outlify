@@ -1,15 +1,36 @@
-name: Deploy docs
+name: Release
 
 on:
-  workflow_run:
-    workflows: ["Packaging"]
-    types:
-      - completed
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  publish:
     runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+    env:
+      package_name: "outlify"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Build package
+        run: uv build
+
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  deploy-docs:
+    runs-on: ubuntu-22.04
+    needs: publish
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,10 +46,6 @@ jobs:
           source .venv/bin/activate
           uv pip install .[docs]
 
-      - name: Extract version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
       - name: Configure Git
         run: |
           git config --global user.name "github-actions"
@@ -37,7 +54,7 @@ jobs:
       - name: Deploy versioned docs
         run: |
           source .venv/bin/activate
-          VERSION=${{ steps.get_version.outputs.VERSION }}
+          VERSION=${GITHUB_REF#refs/tags/v}
           mike deploy "$VERSION" --update-aliases latest stable
           mike set-default "$VERSION"
         env:
