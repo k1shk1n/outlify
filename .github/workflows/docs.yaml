@@ -20,7 +20,10 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: uv pip install .[docs]
+        run: |
+          uv venv .venv
+          source .venv/bin/activate
+          uv pip install .[docs]
 
       - name: Extract version from tag
         id: get_version
