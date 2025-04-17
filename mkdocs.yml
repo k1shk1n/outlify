@@ -26,6 +26,7 @@ theme:
     - navigation.footer
     - content.code.copy
     - content.code.select
+    - versioning
   palette:
     # Note: Using the system theme works with the insiders version
     # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#automatic-light-dark-mode
@@ -54,6 +55,8 @@ theme:
 
 # Additional configuration
 extra:
+  version:
+    provider: mike
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/k1shk1n/outlify

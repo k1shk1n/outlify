@@ -25,31 +25,6 @@ python -m outlify.panel
 Continued...
 ```
 
-</div>
-
-## Quicklinks
-<div class="grid" markdown>
-[**Panel**](#panel)
-
-Used for displaying plain text content inside a customizable Panel.
-</div>
-
----
-
-<div class="grid" markdown>
-[**ParamsPanel**](#paramspanel)
-
-Specialized Panel for displaying key-value pairs, often used for configuration settings or parameterized data.
-</div>
-
----
-
-<div class="grid" markdown>
-[**Common customization**](#common-customization)
-
-General Panel customization that does not depend on a specific Panel.
-</div>
-
 ---
 
 ## Panel
