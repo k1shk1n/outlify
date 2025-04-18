@@ -1,8 +1,8 @@
 # Project information
 site_name: Outlify
+site_url: https://k1shk1n.github.io/
 site_author: Vladislav Kishkin
-site_description: >-
-  Structured cli output — beautifully, simply, and dependency-free
+site_description: Structured cli output — beautifully, simply, and dependency-free
 
 # Repository
 repo_url: https://github.com/k1shk1n/outlify
