@@ -49,10 +49,10 @@ docs = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/k1shk1n/outlify"
+"Homepage" = "https://k1shk1n.github.io/outlify"
 "Source" = "https://github.com/k1shk1n/outlify"
 "Bug Tracker" = "https://github.com/k1shk1n/outlify/issues"
-"Documentation" = "https://github.com/k1shk1n/outlify/blob/main/README.md"
+"Documentation" = "https://k1shk1n.github.io/outlify"
 
 
 [tool.ruff]
