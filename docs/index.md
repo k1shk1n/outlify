@@ -1,9 +1,6 @@
 # Introduction
 
-![logo](assets/logo.svg)
-
 Structured cli output — beautifully, simply, and dependency-free.
-
 
 ## Overview
 **Outlify** is designed with a focus on streamlined log output, making it perfect for cli tools.
