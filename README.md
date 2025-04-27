@@ -62,7 +62,7 @@ parameters = {'parameter1': 'value1', 'parameter2': 'value2'}
 print(ParamsPanel(parameters, title='Startup Parameters'))
 ```
 
-For more details on how to use Panels, see [Panel](docs/components/panel.md)
+For more details on how to use Panels, see [Panel](https://k1shk1n.github.io/outlify/latest/components/panel/)
 
 ## License
 Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](LICENSE)
