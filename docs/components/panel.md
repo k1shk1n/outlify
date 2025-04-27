@@ -25,6 +25,8 @@ python -m outlify.panel
 Continued...
 ```
 
+</div>
+
 ---
 
 ## Panel

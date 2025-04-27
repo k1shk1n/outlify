@@ -30,4 +30,4 @@ python -m outlify.panel
 ```
 
 ## License
-Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](https://github.com/k1shk1n/outlify/blob/docs/add-mkdocs/LICENSE)
+Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](https://github.com/k1shk1n/outlify/blob/main/LICENSE)
