@@ -39,6 +39,17 @@ class PanelBase(ABC):
         pass
 
     @staticmethod
+    def _get_inner_width(outside: int) -> int:
+        """ Get inner panel width
+
+        :param outside: outside panel width
+        :return: inner panel width
+        """
+        if outside < 4:
+            raise ValueError(f'Invalid value for width: {outside} < 4')
+        return outside - 4
+
+    @staticmethod
     def _parse_border_style(style: str) -> BorderStyle:
         if isinstance(style, BorderStyle):
             return style
@@ -140,9 +151,7 @@ class Panel(PanelBase):
         """
         if not isinstance(content, str):
             raise ValueError(f'Invalid type for content: {type(content)} is not str')
-        if width < 4:
-            raise ValueError(f'Invalid value for width: {width} < 4')
-        width = width - 4
+        width = self._get_inner_width(width)
 
         lines = []
         for line in content.splitlines():
@@ -206,37 +215,61 @@ class ParamsPanel(PanelBase):
         """
         if not isinstance(content, Mapping):
             raise ValueError(f'Invalid type for content: {type(content)} is not Mapping')
-        if width < 4:
-            raise ValueError(f'Invalid value for width: {width} < 4')
-        width = width - 4
-        params: Mapping[str, str] = {str(key): str(value) for key, value in content.items()}
+        width = self._get_inner_width(width)
+        params = self._prepare_params(content)
 
         lines = []
         max_key_length = max(len(key) for key in params.keys())
         width_inside = width - max_key_length - len(self.separator)
         indent = ' ' * (max_key_length + len(self.separator))
         for key, value in params.items():
-            displayed_value = "*****" if key in self.hidden else value
+            displayed_value = self._mask_value(key, value)
             line = f"{key.ljust(max_key_length)}{self.separator}{displayed_value}"
 
             if not char:  # mode without border in sides
                 lines.append(f'  {line}')
-                continue
-
-            if len(line) <= width:  # the whole line fits in the panel
+            elif len(line) <= width:  # the whole line fits in the panel
                 lines.append(self.fill(line, width=width, char=char))
-                continue
-
-            # it's necessary to split the string
-            head, tail = line[:width], line[width:]
-            wrapped = textwrap.wrap(
-                tail, width=width_inside, replace_whitespace=False,
-                drop_whitespace=False, break_on_hyphens=False
-            )
-            lines.append(self.fill(head, width=width, char=char))
-            for line in wrapped:
-                lines.append(self.fill(line, width=width, char=char, indent=indent))
+            else:  # it's necessary to split the string
+                lines.extend(self._wrap_line(line, width, width_inside, char, indent))
         return '\n'.join(lines)
+
+    @staticmethod
+    def _prepare_params(content: Mapping[Any, Any]) -> dict[str, str]:
+        """ Converts all keys and values in the mapping to strings
+
+        :param content: original content mapping
+        :return: dictionary with stringified keys and values
+        """
+        return {str(key): str(value) for key, value in content.items()}
+
+    def _mask_value(self, key: str, value: str) -> str:
+        """ Replaces value with asterisks if the key is in the hidden list
+
+        :param key: parameter name
+        :param value: parameter value
+        :return: either the original value or a masked string.
+        """
+        return "*****" if key in self.hidden else value
+
+    def _wrap_line(self, line: str, width: int, width_inside: int, char: str, indent: str) -> list[str]:
+        """ Wraps a long line into multiple lines with proper indentation and border formatting
+
+        :param line: the full line to wrap
+        :param width: full panel width including borders
+        :param width_inside: usable width after the key and separator
+        :param char: border character
+        :param indent: indentation for wrapped lines
+        :return: list of wrapped and formatted lines
+        """
+        head, tail = line[:width], line[width:]
+        wrapped = textwrap.wrap(
+            tail, width=width_inside, replace_whitespace=False,
+            drop_whitespace=False, break_on_hyphens=False
+        )
+        lines = [self.fill(head, width=width, char=char)]
+        lines.extend(self.fill(part, width=width, char=char, indent=indent) for part in wrapped)
+        return lines
 
 
 if __name__ == '__main__':
