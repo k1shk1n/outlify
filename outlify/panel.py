@@ -45,7 +45,7 @@ class PanelBase(ABC):
         :param outside: outside panel width
         :return: inner panel width
         """
-        if outside < 4:
+        if outside <= 4:
             raise ValueError(f'Invalid value for width: {outside} < 4')
         return outside - 4
 
