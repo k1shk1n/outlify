@@ -33,10 +33,9 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: uv sync
-#        run: |
-#          uv venv .venv
-#          uv pip install .[dev]
+        run: |
+          uv venv .venv
+          uv pip install .[dev]
 
       - name: Run unit tests
         run: uv run pytest -m unit
