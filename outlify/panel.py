@@ -312,4 +312,3 @@ if __name__ == '__main__':
     print(ParamsPanel(
         parameters, title='Start Parameters', hidden=('password',)
     ))
-    print(ParamsPanel({'x': 10000000000000}, width=20))
