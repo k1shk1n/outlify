@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Any
 
 import pytest
 
@@ -127,3 +127,134 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
 def test_fill(line: str, width: int, char: str, indent: str, result: str):
     panel = ReleasedPanelBase('test')
     assert panel.fill(line, width=width, char=char, indent=indent) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'text,title,title_align,subtitle,subtitle_align,result',
+    [
+        (
+            'test', '', 'center', '', 'center',
+            '╭──────────────────╮\n│ test             │\n╰──────────────────╯'
+        ),
+        (
+            'test looooong text', '', 'center', '', 'center',
+            '╭──────────────────╮\n│ test looooong    │\n│ text             │\n╰──────────────────╯'
+        ),
+        (
+            'test looooonooooooooog', '', 'center', '', 'center',
+            '╭──────────────────╮\n│ test looooonoooo │\n│ ooooog           │\n╰──────────────────╯'
+        ),
+
+        (
+            'test', 'title1', 'left', 'title2', 'left',
+            '╭─ title1 ─────────╮\n│ test             │\n╰─ title2 ─────────╯'
+        ),
+        (
+            'test', 'title1', 'center', 'title2', 'center',
+            '╭───── title1 ─────╮\n│ test             │\n╰───── title2 ─────╯'
+        ),
+
+        (
+            'test', 'title1', 'right', 'title2', 'right',
+            '╭───────── title1 ─╮\n│ test             │\n╰───────── title2 ─╯'
+        ),
+        (
+            'test', 'title1', 'left', 'title2', 'center',
+            '╭─ title1 ─────────╮\n│ test             │\n╰───── title2 ─────╯'
+        ),
+        (
+            'test', 'title1', 'left', 'title2', 'right',
+            '╭─ title1 ─────────╮\n│ test             │\n╰───────── title2 ─╯'
+        ),
+
+        (
+            'test', 'title1', 'center', 'title2', 'left',
+            '╭───── title1 ─────╮\n│ test             │\n╰─ title2 ─────────╯'
+        ),
+        (
+            'test', 'title1', 'center', 'title2', 'right',
+            '╭───── title1 ─────╮\n│ test             │\n╰───────── title2 ─╯'
+        ),
+
+        (
+            'test', 'title1', 'right', 'title2', 'left',
+            '╭───────── title1 ─╮\n│ test             │\n╰─ title2 ─────────╯'
+        ),
+        (
+            'test', 'title1', 'right', 'title2', 'center',
+            '╭───────── title1 ─╮\n│ test             │\n╰───── title2 ─────╯'
+        ),
+    ]
+)
+def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_align: str, result: str):
+    panel = Panel(
+        text, width=20, title=title, subtitle=subtitle,
+        title_align=title_align, subtitle_align=subtitle_align
+    )
+    assert str(panel) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'params,title,title_align,subtitle,subtitle_align,result',
+    [
+        (
+            {'x': 10, 'y': 20}, '', 'center', '', 'center',
+            '╭──────────────────╮\n│ x = 10           │\n│ y = 20           │\n╰──────────────────╯'
+        ),
+        (
+            {'x': 10000000000000}, '', 'center', '', 'center',
+            '╭──────────────────╮\n│ x = 100000000000 │\n│     00           │\n╰──────────────────╯'
+        ),
+
+        (
+            {'x': 10}, 'title1', 'left', 'title2', 'left',
+            '╭─ title1 ─────────╮\n│ x = 10           │\n╰─ title2 ─────────╯'
+        ),
+        (
+            {'x': 10}, 'title1', 'center', 'title2', 'center',
+            '╭───── title1 ─────╮\n│ x = 10           │\n╰───── title2 ─────╯'
+        ),
+        (
+            {'x': 10}, 'title1', 'right', 'title2', 'right',
+            '╭───────── title1 ─╮\n│ x = 10           │\n╰───────── title2 ─╯'
+        ),
+
+        (
+            {'x': 10}, 'title1', 'left', 'title2', 'center',
+            '╭─ title1 ─────────╮\n│ x = 10           │\n╰───── title2 ─────╯'
+        ),
+        (
+            {'x': 10}, 'title1', 'left', 'title2', 'right',
+            '╭─ title1 ─────────╮\n│ x = 10           │\n╰───────── title2 ─╯'
+        ),
+
+        (
+            {'x': 10}, 'title1', 'center', 'title2', 'left',
+            '╭───── title1 ─────╮\n│ x = 10           │\n╰─ title2 ─────────╯'
+        ),
+        (
+            {'x': 10}, 'title1', 'center', 'title2', 'right',
+            '╭───── title1 ─────╮\n│ x = 10           │\n╰───────── title2 ─╯'
+        ),
+
+        (
+            {'x': 10}, 'title1', 'right', 'title2', 'left',
+            '╭───────── title1 ─╮\n│ x = 10           │\n╰─ title2 ─────────╯'
+        ),
+        (
+            {'x': 10}, 'title1', 'right', 'title2', 'center',
+            '╭───────── title1 ─╮\n│ x = 10           │\n╰───── title2 ─────╯'
+        ),
+    ]
+)
+def test_params_panel(
+        params: dict[Any, Any], title: str, title_align: str, subtitle: str, subtitle_align: str,
+        result: str
+):
+    panel = ParamsPanel(
+        params, width=20, title=title, subtitle=subtitle,
+        title_align=title_align, subtitle_align=subtitle_align
+    )
+    assert str(panel) == result
