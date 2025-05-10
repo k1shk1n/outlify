@@ -33,7 +33,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: uv install --locked
+        run: uv sync
 #        run: |
 #          uv venv .venv
 #          uv pip install .[dev]
