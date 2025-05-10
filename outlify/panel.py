@@ -171,7 +171,7 @@ class Panel(PanelBase):
 
 class ParamsPanel(PanelBase):
     def __init__(
-            self, content: Mapping[str, str], *, width: Optional[int] = None,
+            self, content: Mapping[Any, Any], *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
             border_style: Union[str | BorderStyle] = '╭╮╰╯─│',
@@ -312,3 +312,4 @@ if __name__ == '__main__':
     print(ParamsPanel(
         parameters, title='Start Parameters', hidden=('password',)
     ))
+    print(ParamsPanel({'x': 10000000000000}, width=20))
