@@ -41,15 +41,19 @@ class ListBase(ABC):
 class TitledList(ListBase):
 
     def __init__(
-            self, content: Sequence[Any], *, width: Optional[int] = None, title: str = 'Content',
+            self, content: Sequence[Any], *, title: str = 'Content',
             separator: str = '  '
     ):
         self.separator = separator
-        super().__init__(content, width=width, title=title, title_separator=': ')
+        super().__init__(content, width=None, title=title, title_separator=': ')
 
     def get_content(self, content: list[str], *, width: int) -> str:
         return self.separator.join(content)
 
 
 if __name__ == '__main__':
-    print(TitledList([123, 'lala@1.0.0', {'lala': 123}], width=30))
+    print(
+        'Outlify helps you create list output in a beautiful format\n',
+        'The first one is the simplest: a titled list', sep='\n'
+    )
+    print(TitledList(['ruff@1.0.0', 'pytest@1.2.3', 'mkdocs@3.2.1', 'mike@0.0.1'], title='Packages'))
