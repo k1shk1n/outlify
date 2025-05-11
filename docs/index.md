@@ -2,6 +2,13 @@
 
 Structured cli output — beautifully, simply, and dependency-free.
 
+[![PyPI](https://img.shields.io/pypi/v/outlify)](https://pypi.org/project/outlify/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/outlify)
+![Build](https://github.com/k1shk1n/outlify/actions/workflows/checks.yaml/badge.svg)
+![Repo Size](https://img.shields.io/github/repo-size/k1shk1n/outlify)
+[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+
 ## Overview
 **Outlify** is designed with a focus on streamlined log output, making it perfect for cli tools.
 It emphasizes lightweight operation and minimal dependencies, ensuring smooth integration

@@ -16,6 +16,7 @@ Structured cli output — beautifully, simply, and dependency-free.
 ![Build](https://github.com/k1shk1n/outlify/actions/workflows/checks.yaml/badge.svg)
 ![Repo Size](https://img.shields.io/github/repo-size/k1shk1n/outlify)
 [![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
 </div>
 
