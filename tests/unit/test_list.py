@@ -2,7 +2,7 @@ from typing import Sequence, Optional, Any
 
 import pytest
 
-from outlify.list import ListBase
+from outlify.list import ListBase, TitledList
 
 
 class ReleasedListBase(ListBase):
@@ -45,3 +45,24 @@ def test_get_title(title: str, count: int, result: str):
 )
 def test_prepared_content(content: Sequence[Any], result: list[str]):
     assert ReleasedListBase([])._prepare_content(content) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'content,title,separator,result',
+    [
+        ([], None, None, 'Content (0)'),
+        ([1, 2, 3], None, None, 'Content (3): 1  2  3'),
+        ([1, '2', {1: '2'}], None, None, 'Content (3): 1  2  {1: \'2\'}'),
+        (['first', 'second'], 'Words', None, 'Words (2): first  second'),
+        (['first', 'second'], None, ', ', 'Content (2): first, second'),
+        (['ruff@1.0.0', 'pytest@1.2.3'], 'Packages', ' :: ', 'Packages (2): ruff@1.0.0 :: pytest@1.2.3'),
+    ]
+)
+def test_titled_list(content: Sequence[Any], title: str | None, separator: str | None, result: str):
+    params = {}
+    if title is not None:
+        params['title'] = title
+    if separator is not None:
+        params['separator'] = separator
+    assert str(TitledList(content, **params)) == result
