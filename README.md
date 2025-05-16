@@ -51,6 +51,9 @@ python -m outlify.panel
 ```
 
 ## Components
+**Outlify** provides simple, elegant components for clean and structured CLI output — with zero dependencies. They help organize information clearly and improve log readability.
+
+Each component is easy to use and comes with built-in demos. See below for examples and usage.
 
 <details>
 <summary>Panels</summary>
