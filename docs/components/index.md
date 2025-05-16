@@ -35,3 +35,12 @@ General Panel customization that does not depend on a specific Panel.
 </div>
 
 ---
+
+### Lists
+<div class="grid" markdown>
+[**TitledList**](list.md#titledlist)
+
+Used to output a simple list of headings in a structured form.
+</div>
+
+---

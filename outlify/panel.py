@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Any, Mapping, Iterable, Optional, Union
-import shutil
 import textwrap
 
 from outlify.styles import Align, BorderStyle
+from outlify._utils import resolve_width
 
 
 __all__ = ['Panel', 'ParamsPanel']
@@ -17,7 +17,7 @@ class PanelBase(ABC):
             border_style: Union[str | BorderStyle]
     ):
         border_style = self._parse_border_style(border_style)
-        self.width = self._resolve_width(width)
+        self.width = resolve_width(width)
         self.header = self.get_header(
             title, align=self._resolve_title_align(title_align), width=self.width,
             left=border_style.lt, char=border_style.headers, right=border_style.rt
@@ -65,18 +65,6 @@ class PanelBase(ABC):
             headers=style[4],
             sides=style[5] if len(style) == 6 else '',
         )
-
-    @staticmethod
-    def _resolve_width(width: Optional[int]) -> int:
-        if isinstance(width, int):
-            return width
-        if width is not None:
-            raise ValueError(f'Invalid type for width: {width} is not int')
-
-        try:
-            return shutil.get_terminal_size().columns
-        except (AttributeError, OSError):
-            return 80  # Fallback width
 
     def get_header(self, title: str, *, width: int, align: Align, left: str, char: str, right: str) -> str:
         return f'{left}{self._fill_header(title, width=width - 2, align=align, char=char)}{right}'

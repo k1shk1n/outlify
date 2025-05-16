@@ -37,8 +37,7 @@ class ReleasedPanelBase(PanelBase):
     ]
 )
 def test_resolve_title_align(align: Union[str, Align], result: Align):
-    panel = ReleasedPanelBase('test')
-    assert panel._resolve_title_align(align) == result
+    assert ReleasedPanelBase('test')._resolve_title_align(align) == result
 
 
 @pytest.mark.unit
@@ -53,13 +52,13 @@ def test_resolve_title_align(align: Union[str, Align], result: Align):
     ]
 )
 def test_get_inner_width(width: int, result: int):
-    panel = ReleasedPanelBase('test')
+    base = ReleasedPanelBase('test')
     if result is not None:
-        assert panel._get_inner_width(width) == result
+        assert base._get_inner_width(width) == result
         return
 
     with pytest.raises(ValueError):
-        panel._get_inner_width(width)
+        base._get_inner_width(width)
 
 
 @pytest.mark.unit
@@ -78,13 +77,13 @@ def test_get_inner_width(width: int, result: int):
     ]
 )
 def test_parse_border_style(style: Union[str, BorderStyle], result: BorderStyle):
-    panel = ReleasedPanelBase('test')
+    base = ReleasedPanelBase('test')
     if result is not None:
-        assert panel._parse_border_style(style) == result
+        assert base._parse_border_style(style) == result
         return
 
     with pytest.raises(ValueError):
-        panel._parse_border_style(style)
+        base._parse_border_style(style)
 
 
 @pytest.mark.unit
@@ -97,8 +96,7 @@ def test_parse_border_style(style: Union[str, BorderStyle], result: BorderStyle)
     ]
 )
 def test_fill_header(title: str, align: Align, char: str, result: str):
-    panel = ReleasedPanelBase('test')
-    assert panel._fill_header(title, align=align, width=10, char=char) == result
+    assert ReleasedPanelBase('test')._fill_header(title, align=align, width=10, char=char) == result
 
 
 @pytest.mark.unit
@@ -106,11 +104,15 @@ def test_fill_header(title: str, align: Align, char: str, result: str):
     'title,align,left,char,right,result',
     [
         ('TITLE', Align.left, '╭', '-', '╮', '╭- TITLE --╮'),
+        ('TITLE', Align.center, '╭', '-', '╮', '╭- TITLE --╮'),
+        ('TITLE', Align.right, '╭', '-', '╮', '╭-- TITLE -╮'),
+        ('fake', Align.center, '╭', '-', '╮', '╭-- fake --╮'),
+        ('fake', Align.center, '+', ' ', '+', '+   fake   +'),
     ]
 )
 def test_get_header(title: str, align: Align, left: str, char: str, right: str, result: str):
-    panel = ReleasedPanelBase('test')
-    assert panel.get_header(title, align=align, width=12, left=left, char=char, right=right) == result
+    base = ReleasedPanelBase('test')
+    assert base.get_header(title, align=align, width=12, left=left, char=char, right=right) == result
 
 
 @pytest.mark.unit
@@ -125,8 +127,7 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
     ]
 )
 def test_fill(line: str, width: int, char: str, indent: str, result: str):
-    panel = ReleasedPanelBase('test')
-    assert panel.fill(line, width=width, char=char, indent=indent) == result
+    assert ReleasedPanelBase('test').fill(line, width=width, char=char, indent=indent) == result
 
 
 @pytest.mark.unit

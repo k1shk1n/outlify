@@ -84,3 +84,4 @@ nav:
   - Components:
       - components/index.md
       - Panels: components/panel.md
+      - Lists: components/list.md
