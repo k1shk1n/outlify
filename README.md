@@ -87,7 +87,7 @@ packages = ['first', 'second', 'third']
 print(TitledList(packages))
 ```
 
-For more details on how to use Panels, see [Panel](https://k1shk1n.github.io/outlify/latest/components/panel/)
+For more details on how to use Lists, see [List](https://k1shk1n.github.io/outlify/latest/components/list/)
 
 </details>
 

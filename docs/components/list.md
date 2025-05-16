@@ -27,7 +27,7 @@ Continued...
 ---
 
 ## TitledList
-If you need a simple titled list output, you can use `TitledList`.
+If you need a simple titled list in structured output, you can use `TitledList`.
 
 ```python
 from outlify.list import TitledList
