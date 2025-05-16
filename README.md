@@ -7,6 +7,7 @@ Structured cli output — beautifully, simply, and dependency-free.
 [Overview](#overview) •
 [Install](#install) •
 [Usage](#usage) •
+[Components](#components) •
 [License](#license)
 
 <img src="https://raw.githubusercontent.com/k1shk1n/outlify/main/assets/footer.svg" alt="outlify footer" width="600">
