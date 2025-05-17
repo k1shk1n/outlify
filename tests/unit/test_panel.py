@@ -3,7 +3,7 @@ from typing import Union, Optional, Any
 import pytest
 
 from outlify.panel import PanelBase, Panel, ParamsPanel
-from outlify.styles import Align, BorderStyle
+from outlify.style import Align, BorderStyle
 
 
 class ReleasedPanelBase(PanelBase):

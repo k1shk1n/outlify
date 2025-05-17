@@ -204,7 +204,7 @@ Works the same way for `subtitle`.
 You can also use the `Align` enum from `outlify.styles` to do this:
 
 ```python
-from outlify.styles import Align
+from outlify.style import Align
 from outlify.panel import Panel
 
 print(Panel('My text', title='Header title', title_align=Align.left))
@@ -220,13 +220,13 @@ print(Panel('My text', title='Header title', title_align=Align.left))
 
 </div>
 
-### `border_style`
-You can replace the default borders using `border_style` like this:
+### `border`
+You can replace the default borders using `border` like this:
 
 ```python
 from outlify.panel import Panel
 
-print(Panel('My text', border_style='╔╗╚╝═║'))
+print(Panel('My text', border='╔╗╚╝═║'))
 ```
 
 <div class="result" markdown>
@@ -242,15 +242,15 @@ print(Panel('My text', border_style='╔╗╚╝═║'))
 or to make it clearer in the code, use `BorderStyle`:
 
 ```python
-from outlify.styles import BorderStyle
+from outlify.style import BorderStyle
 from outlify.panel import Panel
 
-borders = BorderStyle(
+border = BorderStyle(
     lt='╔', rt='╗',
     lb='╚', rb='╝',
     headers='═', sides='║'
 )
-print(Panel('My text', border_style=borders))
+print(Panel('My text', border=border))
 ```
 
 <div class="result" markdown>
@@ -288,7 +288,7 @@ long_text = (
         "just want to print data in a cleaner way, "
         "Outlify helps you do it with style."
     )
-print(Panel(long_text, border_style='╔╗╚╝═'))
+print(Panel(long_text, border='╔╗╚╝═'))
 ```
 
 <div class="result" markdown>
