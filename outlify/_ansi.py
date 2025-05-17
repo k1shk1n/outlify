@@ -3,12 +3,11 @@ from enum import Enum
 from typing import Union
 
 
-__all__ = ['RESET', 'AnsiColorsCodes', 'AnsiStylesCodes', 'Style', 'wrap']
+__all__ = ['AnsiColorsCodes', 'AnsiStylesCodes', 'Style', 'wrap']
 
 
 CSI = '\033['           # Control Sequence Introducer
 SGR = 'm'               # Select Graphic Rendition suffix
-RESET = f'{CSI}0{SGR}'
 
 
 @lru_cache(maxsize=128)
@@ -34,6 +33,8 @@ class AnsiColorsCodes(AnsiCodes):
     default = 39
     gray    = 90
 
+    reset = 0  # reset all styles include colors/styles
+
 
 class AnsiStylesCodes(AnsiCodes):
     bold        = 1
@@ -42,6 +43,8 @@ class AnsiStylesCodes(AnsiCodes):
     underline   = 4
     crossed_out = 9
     default     = 22
+
+    reset       = 0  # reset all styles include colors/styles
 
 
 AVAILABLE_VALUES = AnsiColorsCodes.get_available_values() + AnsiStylesCodes.get_available_values()
@@ -99,7 +102,7 @@ class Style(str):
 
 
 def wrap(text: str, style: Style) -> str:
-    return f"{style}{text}{RESET}"
+    return f"{style}{text}{Style(AnsiStylesCodes.reset)}"
 
 
 # # ТЕСТЫ ПО ПЕРФОРМАНСУ

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Mapping, Iterable, Optional, Union
 import textwrap
 
-from outlify.style import Align, BorderStyle, Style, RESET
+from outlify.style import Align, BorderStyle, Style, AnsiStylesCodes
 from outlify._utils import resolve_width, parse_title_align, parse_style
 from outlify._ansi import wrap
 
@@ -71,7 +71,7 @@ class PanelBase(ABC):
     @staticmethod
     def _fill_header(title: str, *, width: int, align: Align, title_style: Style, char: str) -> str:
         if title != '':
-            width += len(str(title_style)) + len(RESET)
+            width += len(str(title_style)) + len(Style(AnsiStylesCodes.reset))
             title = f' {wrap(title, title_style)} '
 
         if align == Align.left:
