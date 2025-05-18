@@ -79,3 +79,19 @@ Content (3): apple, banana, orange
 ```
 
 </div>
+
+### `title_style`
+
+You can also style title with the list, for example, 
+paint them <span style="color: red;">red</span>, make **bold** or 
+<span style="text-decoration: underline;">underlining</span> the text.
+
+You can pass a style in several ways:
+
+1. by the code (`int`) of the style itself
+2. by built-in codes (`AnsiColorsCodes` / `AnsiStylesCodes`, e.g. so `AnsiColorsCodes.red` / `AnsiStylesCodes.bold`)
+3. by string (`str`) separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,
+e.g. `red bold`
+4. by pre-prepared `Style`
+
+For details on styling, see [Style](style.md).

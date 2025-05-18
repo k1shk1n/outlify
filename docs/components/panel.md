@@ -312,9 +312,11 @@ print(Panel(long_text, border='╔╗╚╝═'))
 ### `title_style` / `subtitle_style` / `border_style`
 
 You can also style titles and border with the panel, for example, 
-paint them <span style="color: red;">red</span>, make **bold** or <span style="text-decoration: underline;">underlining</span> the text
+paint them <span style="color: red;">red</span>, make **bold** or
+<span style="text-decoration: underline;">underlining</span> the text.
 
 You can pass a style in several ways:
+
 1. by the code (`int`) of the style itself
 2. by built-in codes (`AnsiColorsCodes` / `AnsiStylesCodes`, e.g. so `AnsiColorsCodes.red` / `AnsiStylesCodes.bold`)
 3. by string (`str`) separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,

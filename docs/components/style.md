@@ -1,13 +1,60 @@
 # Styles
 
-## `AnsiColorsCodes`
-TBD
-
-## `AnsiStylesCodes`
-TBD
+The **Style** module allows you to style **Outlify** elements
 
 ## `Style`
-TBD
+The main class that is used to work with styles.
+
+the class itself is inherited from `str`, as the result of its work will be a string of ansi escape sequences.
+
+It accepts any number of elements of types:
+
+1. `int`: ansi codes
+2. `AnsiColorsCodes` / `AnsiStylesCodes` / base enum `AnsiCodes`: built-in codes
+3. `str`: string separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,
+e.g. `red bold`
+
+## `AnsiColorsCodes`
+`enum` which contains codes for styling text by color
+
+### Available values
+
+| Value     | Code | Comments                               |
+|-----------|:----:|----------------------------------------|
+| `black`   | `30` |
+| `red`     | `31` |
+| `green`   | `32` |
+| `yellow`  | `33` |
+| `blue`    | `34` |
+| `magenta` | `35` |
+| `cyan`    | `36` |
+| `white`   | `37` |
+| `default` | `39` |
+| `gray`    | `90` |
+| `reset`   | `0`  | reset all styles include colors/styles |
+
+!!! tip
+
+    You can check available using `AnsiColorsCodes.get_available_values()`
+
+## `AnsiStylesCodes`
+`enum` which contains codes for styling text by highlighting
+
+### Available values:
+
+| Value         | Code | Comments                               |
+|---------------|:----:|----------------------------------------|
+| `bold`        | `1`  |
+| `dim`         | `2`  |
+| `italic`      | `3`  |
+| `underline`   | `4`  |
+| `crossed_out` | `9`  |
+| `default`     | `35` |
+| `reset`       | `0`  | reset all styles include colors/styles |
+
+!!! tip
+
+    You can check available using `AnsiStylesCodes.get_available_values()`
 
 ## Advanced
 ### Ansi codes

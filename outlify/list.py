@@ -48,16 +48,18 @@ class ListBase(ABC):
 class TitledList(ListBase):
 
     def __init__(
-            self, content: Sequence[Any], *, title: str = 'Content',
-            separator: str = '  ', title_style: Optional[Union[str, Style]] = None,
+            self, content: Sequence[Any], *, title: str = 'Content', title_style: Optional[Union[str, Style]] = None,
+            separator: str = '  ',
     ):
-        """
+        """ A simple list for displaying elements with customizable title.
 
-        :param content:
-        :param title:
-        :param separator:
+        Can be used to list installed packages, processed files, etc.
+
+        :param content: element enumeration
+        :param title: title displayed before elements
         :param title_style: ANSI style to apply to the title. Can be a string (e.g., 'red bold') or a `Style` instance.
                             Allows customization of title color and text style (e.g., bold, underline).
+        :param separator: separator between title and elements
         """
         self.separator = separator
         super().__init__(content, width=None, title=title, title_separator=': ', title_style=title_style)
