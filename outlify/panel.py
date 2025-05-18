@@ -358,5 +358,5 @@ if __name__ == '__main__':
         parameters, title='Start Parameters', hidden=('password',)
     ))
     print(ParamsPanel(
-        parameters, title='Start Parameters', hidden=('password',), params_style=Style('red')
+        parameters, title='Start Parameters', hidden=('password',)
     ))

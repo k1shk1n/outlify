@@ -102,6 +102,10 @@ print(ParamsPanel(parameters, separator=': '))
 ```
 </div>
 
+### `params_style`
+if you want to style variable names in parameters, you can use `params_style`.
+This works the same way as [`title_style` / `subtitle_style` / `border_style`](#title_style-subtitle_style-border_style) 
+
 ### In addition
 Also a feature of `ParamsPanel` is that values are aligned to the `separator` if they are too large, for example:
 
@@ -159,7 +163,7 @@ If you don't specify a size, it will automatically adjust for the terminal size.
 
     For CI systems it is not possible to calculate the size and the Panel will be size 80
 
-### `title`/`subtitle`
+### `title` / `subtitle`
 You can specify titles using `title` (for header title) or `subtitle` (for footer title) like this:
 
 
@@ -179,7 +183,7 @@ print(Panel('My text', title='Header title', subtitle='Footer title'))
 
 </div>
 
-### `title_align`/`subtitle_align`
+### `title_align` / `subtitle_align`
 By default, the title is placed in the `center` of the Panel, 
 but you can move it to the `left` or `right` by specifying:
 
@@ -304,3 +308,17 @@ print(Panel(long_text, border='╔╗╚╝═'))
 ```
 
 </div>
+
+### `title_style` / `subtitle_style` / `border_style`
+
+You can also style titles and border with the panel, for example, 
+paint them <span style="color: red;">red</span>, make **bold** or <span style="text-decoration: underline;">underlining</span> the text
+
+You can pass a style in several ways:
+1. by the code (`int`) of the style itself
+2. by built-in codes (`AnsiColorsCodes` / `AnsiStylesCodes`, e.g. so `AnsiColorsCodes.red` / `AnsiStylesCodes.bold`)
+3. by string (`str`) separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,
+e.g. `red bold`
+4. by pre-prepared `Style`
+
+For details on styling, see [Style](style.md).

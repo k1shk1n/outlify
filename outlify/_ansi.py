@@ -106,20 +106,3 @@ class Style(str):
 
 def wrap(text: str, style: Style, reset: Style) -> str:
     return f"{style}{text}{reset}"
-
-
-print(repr(f'need: {Style()} lala'))
-print(Style(None))
-# # ТЕСТЫ ПО ПЕРФОРМАНСУ
-# from datetime import datetime
-#
-# now1 = datetime.now()
-# print('\033[31m\033[1mtext\033[0m')
-# end1 = datetime.now()
-#
-# now2 = datetime.now()
-# print('\033[31;1mtext\033[0m')
-# end2 = datetime.now()
-#
-# print(f'раздельно: {end1 - now1}')
-# print(f'вместе: {end2 - now2}')
