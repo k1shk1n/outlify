@@ -5,6 +5,8 @@ import pytest
 from outlify.panel import PanelBase, Panel, ParamsPanel
 from outlify.style import Align, BorderStyle, Style
 
+from .common import EMPTY
+
 
 class ReleasedPanelBase(PanelBase):
     def __init__(
@@ -25,9 +27,6 @@ class ReleasedPanelBase(PanelBase):
 
     def get_content(self, content: str, *, width: int, char: str, border_style: Style) -> str:
         return ''
-
-EMPTY = Style()
-RESET = '\033[0m'
 
 
 @pytest.mark.unit

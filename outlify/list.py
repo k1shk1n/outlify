@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, Any, Optional
+from typing import Sequence, Any, Optional, Union
 
-from outlify._utils import resolve_width
+from outlify.style import Style
+from outlify._utils import resolve_width, parse_style, get_reset_by_style
 
 
 __all__ = ['TitledList']
@@ -9,9 +10,14 @@ __all__ = ['TitledList']
 
 class ListBase(ABC):
 
-    def __init__(self, content: Sequence[Any], *, width: Optional[int], title: str, title_separator: str):
+    def __init__(
+            self, content: Sequence[Any], *, width: Optional[int],
+            title: str, title_separator: str, title_style: Optional[Union[str, Style]] = None,
+    ):
         self.width = resolve_width(width)
-        self.title = self._get_title(title, len(content))
+        title_style = parse_style(title_style)
+        title_reset = get_reset_by_style(title_style)
+        self.title = self._get_title(title, count=len(content), style=title_style, reset=title_reset)
         self.title_separator = title_separator
 
         content = self._prepare_content(content)
@@ -22,8 +28,8 @@ class ListBase(ABC):
         pass
 
     @staticmethod
-    def _get_title(title: str, count: int) -> str:
-        return f'{title} ({count})'
+    def _get_title(title: str, *, count: int, style: Style, reset: Style) -> str:
+        return f'{style}{title}{reset} ({count})'
 
     @staticmethod
     def _prepare_content(content: Sequence[Any]) -> list[str]:
@@ -42,10 +48,18 @@ class TitledList(ListBase):
 
     def __init__(
             self, content: Sequence[Any], *, title: str = 'Content',
-            separator: str = '  '
+            separator: str = '  ', title_style: Optional[Union[str, Style]] = None,
     ):
+        """
+
+        :param content:
+        :param title:
+        :param separator:
+        :param title_style: ANSI style to apply to the title. Can be a string (e.g., 'red bold') or a `Style` instance.
+                            Allows customization of title color and text style (e.g., bold, underline).
+        """
         self.separator = separator
-        super().__init__(content, width=None, title=title, title_separator=': ')
+        super().__init__(content, width=None, title=title, title_separator=': ', title_style=title_style)
 
     def get_content(self, content: list[str], *, width: int) -> str:
         return self.separator.join(content)

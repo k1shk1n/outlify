@@ -4,6 +4,8 @@ import pytest
 
 from outlify.list import ListBase, TitledList
 
+from .common import EMPTY
+
 
 class ReleasedListBase(ListBase):
     def __init__(
@@ -27,7 +29,7 @@ class ReleasedListBase(ListBase):
     ]
 )
 def test_get_title(title: str, count: int, result: str):
-    assert ReleasedListBase([])._get_title(title, count) == result
+    assert ReleasedListBase([])._get_title(title, count=count, style=EMPTY, reset=EMPTY) == result
 
 
 @pytest.mark.unit
