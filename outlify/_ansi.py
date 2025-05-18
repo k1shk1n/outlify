@@ -104,8 +104,8 @@ class Style(str):
             return ValueError(f'Invalid {code} code for style (for ansi codes)')
 
 
-def wrap(text: str, style: Style, end: Style) -> str:
-    return f"{style}{text}{end}"
+def wrap(text: str, style: Style, reset: Style) -> str:
+    return f"{style}{text}{reset}"
 
 
 print(repr(f'need: {Style()} lala'))

@@ -3,8 +3,9 @@ from typing import Sequence, Optional, Any
 import pytest
 
 from outlify.list import ListBase, TitledList
+from outlify.style import Style
 
-from .common import EMPTY
+from .common import EMPTY, RESET
 
 
 class ReleasedListBase(ListBase):
@@ -21,15 +22,16 @@ class ReleasedListBase(ListBase):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'title,count,result',
+    'title,count,style,reset,result',
     [
-        ('TITLE', 0, 'TITLE (0)'),
-        ('fake', 10, 'fake (10)'),
-        ('minus', -10, 'minus (-10)'),
+        ('TITLE', 0, EMPTY, EMPTY, 'TITLE (0)'),
+        ('fake', 10, EMPTY, EMPTY, 'fake (10)'),
+        ('minus', -10, EMPTY, EMPTY, 'minus (-10)'),
+        ('TITLE', 0, Style('bold'), RESET, '\033[1mTITLE (0)\033[0m'),
     ]
 )
-def test_get_title(title: str, count: int, result: str):
-    assert ReleasedListBase([])._get_title(title, count=count, style=EMPTY, reset=EMPTY) == result
+def test_get_title(title: str, count: int, style: Style, reset: Style, result: str):
+    assert ReleasedListBase([])._get_title(title, count=count, style=style, reset=reset) == result
 
 
 @pytest.mark.unit

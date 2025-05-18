@@ -3,6 +3,7 @@ from typing import Sequence, Any, Optional, Union
 
 from outlify.style import Style
 from outlify._utils import resolve_width, parse_style, get_reset_by_style
+from outlify._ansi import wrap
 
 
 __all__ = ['TitledList']
@@ -29,7 +30,7 @@ class ListBase(ABC):
 
     @staticmethod
     def _get_title(title: str, *, count: int, style: Style, reset: Style) -> str:
-        return f'{style}{title}{reset} ({count})'
+        return wrap(f'{title} ({count})', style, reset)
 
     @staticmethod
     def _prepare_content(content: Sequence[Any]) -> list[str]:
