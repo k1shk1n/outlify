@@ -307,6 +307,6 @@ def test_params_panel(
         params, width=20, title=title, subtitle=subtitle,
         title_align=title_align, title_style=EMPTY,
         subtitle_align=subtitle_align, subtitle_style=EMPTY,
-        border_style=EMPTY
+        border_style=EMPTY, params_style=EMPTY
     )
     assert str(panel) == result

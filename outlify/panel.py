@@ -192,7 +192,8 @@ class ParamsPanel(PanelBase):
             subtitle_style: Optional[Union[str, Style]] = None,
             border: Union[str | BorderStyle] = '╭╮╰╯─│',
             border_style: Optional[Union[str, Style]] = None,
-            hidden: Iterable[str] = (), separator: str = ' = '
+            hidden: Iterable[str] = (), separator: str = ' = ',
+            params_style: Optional[Union[str, Style]] = None,
     ):
         """ A panel for displaying key-value parameters in a formatted layout.
 
@@ -218,9 +219,16 @@ class ParamsPanel(PanelBase):
         :param hidden: Iterable of keys from `content` that should be excluded from display.
                        Useful for filtering out sensitive or irrelevant data
         :param separator: key-value separator
+        :param params_style: ANSI style to apply to the parameter names. Can be a string (e.g., 'red bold') or a `Style`
+                             instance. Allows customization of border color and text style (e.g., bold, underline).
         """
         self.hidden = hidden
         self.separator = separator
+        self.params_style = parse_style(params_style)
+        self.params_reset = get_reset_by_style(params_style)
+
+        # width alignment to styles
+        self._additional_width = len(self.params_style) + len(self.params_reset)
         super().__init__(
             content, width=width,
             title=title, title_align=title_align, title_style=title_style,
@@ -247,16 +255,20 @@ class ParamsPanel(PanelBase):
         max_key_length = max(len(key) for key in params.keys())
         width_inside = width - max_key_length - len(self.separator)
         indent = ' ' * (max_key_length + len(self.separator))
+        leveled_width = width + self._additional_width
         for key, value in params.items():
             displayed_value = self._mask_value(key, value)
-            line = f"{key.ljust(max_key_length)}{self.separator}{displayed_value}"
+            line = (
+                f"{self.params_style}{key.ljust(max_key_length)}{self.params_reset}"
+                f"{self.separator}{displayed_value}"
+            )
 
             if not char:  # mode without border in sides
                 lines.append(f'  {line}')
-            elif len(line) <= width:  # the whole line fits in the panel
-                lines.append(self.fill(line, width=width, char=char, border_style=border_style))
+            elif len(line) <= leveled_width:  # the whole line fits in the panel
+                lines.append(self.fill(line, width=leveled_width, char=char, border_style=border_style))
             else:  # it's necessary to split the string
-                lines.extend(self._wrap_line(line, width, width_inside, char, border_style, indent))
+                lines.extend(self._wrap_line(line, width, leveled_width, width_inside, char, border_style, indent))
         return '\n'.join(lines)
 
     @staticmethod
@@ -278,12 +290,14 @@ class ParamsPanel(PanelBase):
         return "*****" if key in self.hidden else value
 
     def _wrap_line(
-            self, line: str, width: int, width_inside: int, char: str, border_style: Style, indent: str
+            self, line: str, width: int, leveled_width: int, width_inside: int,
+            char: str, border_style: Style, indent: str
     ) -> list[str]:
         """ Wraps a long line into multiple lines with proper indentation and border formatting
 
         :param line: the full line to wrap
         :param width: full panel width including borders
+        :param width: leveled panel width including borders (for ansi colors)
         :param width_inside: usable width after the key and separator
         :param char: border character
         :param border_style: ANSI style to apply to the border. Can be a string (e.g., 'red bold') or a `Style`
@@ -291,7 +305,7 @@ class ParamsPanel(PanelBase):
         :param indent: indentation for wrapped lines
         :return: list of wrapped and formatted lines
         """
-        head, tail = line[:width], line[width:]
+        head, tail = line[:leveled_width], line[leveled_width:]
         wrapped = textwrap.wrap(
             tail, width=width_inside, replace_whitespace=False,
             drop_whitespace=False, break_on_hyphens=False
@@ -342,4 +356,7 @@ if __name__ == '__main__':
     }
     print(ParamsPanel(
         parameters, title='Start Parameters', hidden=('password',)
+    ))
+    print(ParamsPanel(
+        parameters, title='Start Parameters', hidden=('password',), params_style=Style('red')
     ))
