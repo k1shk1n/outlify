@@ -12,7 +12,7 @@ SGR = 'm'      # Select Graphic Rendition suffix
 
 @lru_cache(maxsize=128)
 def code_to_ansi(*codes: int) -> str:
-    return f"{CSI}{';'.join(str(code) for code in codes)}{SGR}"
+    return f"{CSI}{';'.join(map(str, codes))}{SGR}"
 
 
 class AnsiCodes(Enum):
@@ -55,10 +55,10 @@ class Style(str):
         if not style_codes or style_codes == (None, ):
             return super().__new__(cls, '')
 
-        codes = []
+        codes: list[int] = []
         for code in style_codes:
             if isinstance(code, AnsiCodes):
-                codes.append(code.value)
+                codes.append(code.value)  # noqa
             elif isinstance(code, str):
                 codes.extend(Style._process_str(code))
             else:
