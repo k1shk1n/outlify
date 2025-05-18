@@ -2,35 +2,36 @@ from abc import ABC, abstractmethod
 from typing import Any, Mapping, Iterable, Optional, Union
 import textwrap
 
-from outlify.style import Align, BorderStyle, Style, AnsiStylesCodes
-from outlify._utils import resolve_width, parse_title_align, parse_style
+from outlify.style import Align, BorderStyle, Style
+from outlify._utils import resolve_width, parse_title_align, parse_style, get_reset_by_style
 from outlify._ansi import wrap
 
 
 __all__ = ['Panel', 'ParamsPanel']
 
 
-RESET = Style(AnsiStylesCodes.reset)
-
-
 class PanelBase(ABC):
     def __init__(
             self, content: Any, *, width: Optional[int],
-            title: str, title_align: Union[str, Align], title_style: Union[str, Style],
-            subtitle: str, subtitle_align: Union[str, Align], subtitle_style: Union[str, Style],
-            border: Union[str | BorderStyle], border_style: Union[str, Style]
+            title: str, title_align: Union[str, Align], title_style: Optional[Union[str, Style]],
+            subtitle: str, subtitle_align: Union[str, Align], subtitle_style: Optional[Union[str, Style]],
+            border: Union[str | BorderStyle], border_style: Optional[Union[str, Style]]
     ):
         border = self._parse_border(border)
         width = resolve_width(width)
         title_style, subtitle_style = parse_style(title_style), parse_style(subtitle_style)
         border_style = parse_style(border_style)
+        title_reset = get_reset_by_style(title_style)
+        subtitle_reset = get_reset_by_style(subtitle_style)
+        self.border_reset = get_reset_by_style(border_style)
         self.header = self.get_header(
-            title, align=parse_title_align(title_align), title_style=title_style, width=width,
-            left=border.lt, char=border.headers, right=border.rt, border_style=border_style
+            title, align=parse_title_align(title_align), title_style=title_style, title_style_reset=title_reset,
+            width=width, left=border.lt, char=border.headers, right=border.rt, border_style=border_style
         )
         self.footer = self.get_header(
-            subtitle, align=parse_title_align(subtitle_align), title_style=subtitle_style, width=width,
-            left=border.lb, char=border.headers, right=border.rb, border_style=border_style
+            subtitle, align=parse_title_align(subtitle_align), title_style=subtitle_style,
+            title_style_reset=subtitle_reset, width=width, left=border.lb, char=border.headers,
+            right=border.rb, border_style=border_style
         )
         self.content = self.get_content(content, width=width, char=border.sides, border_style=border_style)
 
@@ -66,24 +67,23 @@ class PanelBase(ABC):
         )
 
     def get_header(
-            self, title: str, *, width: int, align: Align, title_style: Style,
+            self, title: str, *, width: int, align: Align, title_style: Style, title_style_reset: Style,
             left: str, char: str, right: str, border_style: Style
     ) -> str:
         header = self._fill_header(
-            title, width=width - 2, align=align, title_style=title_style,
+            title, width=width - 2, align=align, title_style=title_style, title_style_reset=title_style_reset,
             char=char, border_style=border_style
         )
-        return f'{border_style}{left}{header}{right}{RESET}'
+        return f'{border_style}{left}{header}{right}{self.border_reset}'
 
-    @staticmethod
     def _fill_header(
-            title: str, *, width: int, align: Align, title_style: Style,
+            self, title: str, *, width: int, align: Align, title_style: Style, title_style_reset: Style,
             char: str, border_style: Style
     ) -> str:
         if title != '':
-            width += len(str(title_style)) + len(RESET)   # title styling
-            width += len(str(border_style)) + len(RESET)  # border styling
-            title = f'{RESET} {wrap(title, title_style)} {border_style}'
+            width += len(str(title_style)) + len(title_style_reset)   # title styling
+            width += len(self.border_reset) + len(str(border_style))  # border styling
+            title = f'{self.border_reset} {wrap(title, title_style, title_style_reset)} {border_style}'
 
         if align == Align.left:
             title = f'{char}{title}'
@@ -93,8 +93,7 @@ class PanelBase(ABC):
         title = f'{title}{char}'
         return title.rjust(width, char)
 
-    @staticmethod
-    def fill(line: str, *, width: int, char: str, border_style: Style, indent: str = '') -> str:
+    def fill(self, line: str, *, width: int, char: str, border_style: Style, indent: str = '') -> str:
         """ Fill a single line
 
         :param line: the content to be placed inside the panel
@@ -105,7 +104,8 @@ class PanelBase(ABC):
         :param indent: indentation added before the content
         :return: a string representing the line wrapped with borders and padded to match the specified width
         """
-        return f'{border_style}{char}{RESET} {indent}{line.ljust(width - len(indent))} {border_style}{char}{RESET}'
+        border = f'{border_style}{char}{self.border_reset}'
+        return f'{border} {indent}{line.ljust(width - len(indent))} {border}'
 
     def __str__(self) -> str:
         return '\n'.join([self.header, self.content, self.footer])
@@ -118,11 +118,11 @@ class Panel(PanelBase):
     def __init__(
             self, content: str, *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
-            title_style: Union[str, Style] = 'default_color default_style',
+            title_style: Optional[Union[str, Style]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
-            subtitle_style: Union[str, Style] = 'default_color default_style',
+            subtitle_style: Optional[Union[str, Style]] = None,
             border: Union[str | BorderStyle] = '╭╮╰╯─│',
-            border_style: Union[str, Style] = 'default_color default_style',
+            border_style: Optional[Union[str, Style]] = None,
     ):
         """ A simple panel for displaying plain text with customizable borders, title, and subtitle.
 
@@ -187,11 +187,11 @@ class ParamsPanel(PanelBase):
     def __init__(
             self, content: Mapping[Any, Any], *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
-            title_style: Union[str, Style] = 'default_color default_style',
+            title_style: Optional[Union[str, Style]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
-            subtitle_style: Union[str, Style] = 'default_color default_style',
+            subtitle_style: Optional[Union[str, Style]] = None,
             border: Union[str | BorderStyle] = '╭╮╰╯─│',
-            border_style: Union[str, Style] = 'default_color default_style',
+            border_style: Optional[Union[str, Style]] = None,
             hidden: Iterable[str] = (), separator: str = ' = '
     ):
         """ A panel for displaying key-value parameters in a formatted layout.

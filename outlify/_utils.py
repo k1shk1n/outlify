@@ -2,6 +2,11 @@ from typing import Optional, Union, Any
 import shutil
 
 from outlify.style import Align, Style
+from outlify._ansi import AnsiStylesCodes
+
+
+EMPTY = Style()
+RESET = Style(AnsiStylesCodes.reset)
 
 
 def resolve_width(width: Optional[int]) -> int:
@@ -28,3 +33,12 @@ def _parse_class(element: Union[str, Any], cls: Any) -> Any:
     if isinstance(element, cls):
         return element
     return cls(element)
+
+
+def get_reset_by_style(style: Style) -> Style:
+    """ Return the appropriate reset code for the given style
+
+    If the style is empty, returns an empty reset.
+    Otherwise, returns the standard reset
+    """
+    return RESET if style != '' else EMPTY

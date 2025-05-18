@@ -1,13 +1,13 @@
 from functools import lru_cache
 from enum import Enum
-from typing import Union
+from typing import Union, Optional
 
 
 __all__ = ['AnsiColorsCodes', 'AnsiStylesCodes', 'Style', 'wrap']
 
 
-CSI = '\033['           # Control Sequence Introducer
-SGR = 'm'               # Select Graphic Rendition suffix
+CSI = '\033['  # Control Sequence Introducer
+SGR = 'm'      # Select Graphic Rendition suffix
 
 
 @lru_cache(maxsize=128)
@@ -51,7 +51,10 @@ AVAILABLE_VALUES = AnsiColorsCodes.get_available_values() + AnsiStylesCodes.get_
 
 
 class Style(str):
-    def __new__(cls, *style_codes: Union[int, str, AnsiCodes]) -> str:
+    def __new__(cls, *style_codes: Optional[Union[int, str, AnsiCodes]]):
+        if not style_codes or style_codes == (None, ):
+            return super().__new__(cls, '')
+
         codes = []
         for code in style_codes:
             if isinstance(code, AnsiCodes):
@@ -101,10 +104,12 @@ class Style(str):
             return ValueError(f'Invalid {code} code for style (for ansi codes)')
 
 
-def wrap(text: str, style: Style) -> str:
-    return f"{style}{text}{Style(AnsiStylesCodes.reset)}"
+def wrap(text: str, style: Style, end: Style) -> str:
+    return f"{style}{text}{end}"
 
 
+print(repr(f'need: {Style()} lala'))
+print(Style(None))
 # # ТЕСТЫ ПО ПЕРФОРМАНСУ
 # from datetime import datetime
 #
