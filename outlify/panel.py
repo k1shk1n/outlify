@@ -341,5 +341,5 @@ if __name__ == '__main__':
         'description': 'This is a fake description to show you how Outlify can wrap text in the Parameters Panel'
     }
     print(ParamsPanel(
-        parameters, title='Start Parameters', hidden=('password',), title_style='default_color bold red', border_style='red'
+        parameters, title='Start Parameters', hidden=('password',)
     ))

@@ -51,7 +51,7 @@ AVAILABLE_VALUES = AnsiColorsCodes.get_available_values() + AnsiStylesCodes.get_
 
 
 class Style(str):
-    def __new__(cls, *style_codes: Union[int, str, AnsiCodes]):
+    def __new__(cls, *style_codes: Union[int, str, AnsiCodes]) -> str:
         codes = []
         for code in style_codes:
             if isinstance(code, AnsiCodes):

@@ -19,13 +19,13 @@ class ReleasedPanelBase(PanelBase):
             content, width=width,
             title=title, title_align=title_align, title_style=title_style,
             subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
-            border=border
+            border=border, border_style='reset'
         )
 
-    def get_content(self, content: str, *, width: int, char: str) -> str:
+    def get_content(self, content: str, *, width: int, char: str, border_style: Style) -> str:
         return ''
 
-RELEASED_RESET = '\033[0m'
+RESET = '\033[0m'
 
 
 @pytest.mark.unit
@@ -78,14 +78,15 @@ def test_parse_border_style(style: Union[str, BorderStyle], result: BorderStyle)
 @pytest.mark.parametrize(
     'title,align,char,result',
     [
-        ('TITLE', Align.left, '-', f'- {RELEASED_RESET}TITLE{RELEASED_RESET} --'),
-        ('TITLE', Align.center, '-', f'- {RELEASED_RESET}TITLE{RELEASED_RESET} --'),
-        ('TITLE', Align.right, '-', f'-- {RELEASED_RESET}TITLE{RELEASED_RESET} -'),
+        ('TITLE', Align.left, '-', f'-{RESET} {RESET}TITLE{RESET} {RESET}--'),
+        ('TITLE', Align.center, '-', f'-{RESET} {RESET}TITLE{RESET} {RESET}--'),
+        ('TITLE', Align.right, '-', f'--{RESET} {RESET}TITLE{RESET} {RESET}-'),
     ]
 )
 def test_fill_header(title: str, align: Align, char: str, result: str):
     assert ReleasedPanelBase('test')._fill_header(
-        title, align=align, width=10, char=char, title_style=Style(AnsiStylesCodes.reset)
+        title, align=align, width=10, char=char,
+        title_style=Style(AnsiStylesCodes.reset), border_style=Style(AnsiStylesCodes.reset)
     ) == result
 
 
@@ -93,17 +94,18 @@ def test_fill_header(title: str, align: Align, char: str, result: str):
 @pytest.mark.parametrize(
     'title,align,left,char,right,result',
     [
-        ('TITLE', Align.left, '╭', '-', '╮', f'╭- {RELEASED_RESET}TITLE{RELEASED_RESET} --╮'),
-        ('TITLE', Align.center, '╭', '-', '╮', f'╭- {RELEASED_RESET}TITLE{RELEASED_RESET} --╮'),
-        ('TITLE', Align.right, '╭', '-', '╮', f'╭-- {RELEASED_RESET}TITLE{RELEASED_RESET} -╮'),
-        ('fake', Align.center, '╭', '-', '╮', f'╭-- {RELEASED_RESET}fake{RELEASED_RESET} --╮'),
-        ('fake', Align.center, '+', ' ', '+', f'+   {RELEASED_RESET}fake{RELEASED_RESET}   +'),
+        ('TITLE', Align.left, '╭', '-', '╮', f'{RESET}╭-{RESET} {RESET}TITLE{RESET} {RESET}--╮{RESET}'),
+        ('TITLE', Align.center, '╭', '-', '╮', f'{RESET}╭-{RESET} {RESET}TITLE{RESET} {RESET}--╮{RESET}'),
+        ('TITLE', Align.right, '╭', '-', '╮', f'{RESET}╭--{RESET} {RESET}TITLE{RESET} {RESET}-╮{RESET}'),
+        ('fake', Align.center, '╭', '-', '╮', f'{RESET}╭--{RESET} {RESET}fake{RESET} {RESET}--╮{RESET}'),
+        ('fake', Align.center, '+', ' ', '+', f'{RESET}+  {RESET} {RESET}fake{RESET} {RESET}  +{RESET}'),
     ]
 )
 def test_get_header(title: str, align: Align, left: str, char: str, right: str, result: str):
     base = ReleasedPanelBase('test')
     assert base.get_header(
-        title, align=align, title_style=Style('reset'), width=12, left=left, char=char, right=right
+        title, align=align, title_style=Style(AnsiStylesCodes.reset), width=12, left=left, char=char, right=right,
+        border_style=Style(AnsiStylesCodes.reset)
     ) == result
 
 
@@ -111,15 +113,17 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
 @pytest.mark.parametrize(
     'line,width,char,indent,result',
     [
-        ('test', 6, '|', '', '| test   |'),
-        ('test', 6, '|', ' ', '|  test  |'),
-        ('test', 6, '|', '-', '| -test  |'),
-        ('test', 6, '1', '-', '1 -test  1'),
-        ('test', 10, '|', ' ', '|  test      |'),
+        ('test', 6, '|', '', f'{RESET}|{RESET} test   {RESET}|{RESET}'),
+        ('test', 6, '|', ' ', f'{RESET}|{RESET}  test  {RESET}|{RESET}'),
+        ('test', 6, '|', '-', f'{RESET}|{RESET} -test  {RESET}|{RESET}'),
+        ('test', 6, '1', '-', f'{RESET}1{RESET} -test  {RESET}1{RESET}'),
+        ('test', 10, '|', ' ', f'{RESET}|{RESET}  test      {RESET}|{RESET}'),
     ]
 )
 def test_fill(line: str, width: int, char: str, indent: str, result: str):
-    assert ReleasedPanelBase('test').fill(line, width=width, char=char, indent=indent) == result
+    assert ReleasedPanelBase('test').fill(
+        line, width=width, char=char, indent=indent, border_style=Style(AnsiStylesCodes.reset)
+    ) == result
 
 
 @pytest.mark.unit
@@ -128,81 +132,81 @@ def test_fill(line: str, width: int, char: str, indent: str, result: str):
     [
         (
             'test', '', 'center', '', 'center',
-            '╭──────────────────╮\n'
-            '│ test             │\n'
-            '╰──────────────────╯'
+            f'{RESET}╭──────────────────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰──────────────────╯{RESET}'
         ),
         (
             'test looooong text', '', 'center', '', 'center',
-            '╭──────────────────╮\n'
-            '│ test looooong    │\n'
-            '│ text             │\n'
-            '╰──────────────────╯'
+            f'{RESET}╭──────────────────╮{RESET}\n'
+            f'{RESET}│{RESET} test looooong    {RESET}│{RESET}\n'
+            f'{RESET}│{RESET} text             {RESET}│{RESET}\n'
+            f'{RESET}╰──────────────────╯{RESET}'
         ),
         (
             'test looooonooooooooog', '', 'center', '', 'center',
-            '╭──────────────────╮\n'
-            '│ test looooonoooo │\n'
-            '│ ooooog           │\n'
-            '╰──────────────────╯'
+            f'{RESET}╭──────────────────╮{RESET}\n'
+            f'{RESET}│{RESET} test looooonoooo {RESET}│{RESET}\n'
+            f'{RESET}│{RESET} ooooog           {RESET}│{RESET}\n'
+            f'{RESET}╰──────────────────╯{RESET}'
         ),
 
         (
             'test', 'title1', 'left', 'title2', 'left',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ test             │\n╰'
-            f'─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             'test', 'title1', 'center', 'title2', 'center',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ test             │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
 
         (
             'test', 'title1', 'right', 'title2', 'right',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ test             │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
         (
             'test', 'title1', 'left', 'title2', 'center',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ test             │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
         (
             'test', 'title1', 'left', 'title2', 'right',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ test             │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
 
         (
             'test', 'title1', 'center', 'title2', 'left',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ test             │\n'
-            f'╰─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             'test', 'title1', 'center', 'title2', 'right',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ test             │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
 
         (
             'test', 'title1', 'right', 'title2', 'left',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ test             │\n'
-            f'╰─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             'test', 'title1', 'right', 'title2', 'center',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ test             │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} test             {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
     ]
 )
@@ -210,7 +214,8 @@ def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_
     panel = Panel(
         text, width=20, title=title, subtitle=subtitle,
         title_align=title_align, title_style='reset',
-        subtitle_align=subtitle_align, subtitle_style='reset'
+        subtitle_align=subtitle_align, subtitle_style='reset',
+        border_style='reset'
     )
     assert str(panel) == result
 
@@ -221,75 +226,75 @@ def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_
     [
         (
             {'x': 10, 'y': 20}, '', 'center', '', 'center',
-            '╭──────────────────╮\n'
-            '│ x = 10           │\n'
-            '│ y = 20           │\n'
-            '╰──────────────────╯'
+            f'{RESET}╭──────────────────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}│{RESET} y = 20           {RESET}│{RESET}\n'
+            f'{RESET}╰──────────────────╯{RESET}'
         ),
         (
             {'x': 10000000000000}, '', 'center', '', 'center',
-            '╭──────────────────╮\n'
-            '│ x = 100000000000 │\n'
-            '│     00           │\n'
-            '╰──────────────────╯'
+            f'{RESET}╭──────────────────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 100000000000 {RESET}│{RESET}\n'
+            f'{RESET}│{RESET}     00           {RESET}│{RESET}\n'
+            f'{RESET}╰──────────────────╯{RESET}'
         ),
 
         (
             {'x': 10}, 'title1', 'left', 'title2', 'left',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ x = 10           │\n'
-            f'╰─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             {'x': 10}, 'title1', 'center', 'title2', 'center',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ x = 10           │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
         (
             {'x': 10}, 'title1', 'right', 'title2', 'right',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ x = 10           │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
 
         (
             {'x': 10}, 'title1', 'left', 'title2', 'center',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ x = 10           │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
         (
             {'x': 10}, 'title1', 'left', 'title2', 'right',
-            f'╭─ {RELEASED_RESET}title1{RELEASED_RESET} ─────────╮\n'
-            f'│ x = 10           │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─{RESET} {RESET}title1{RESET} {RESET}─────────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
 
         (
             {'x': 10}, 'title1', 'center', 'title2', 'left',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ x = 10           │\n'
-            f'╰─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             {'x': 10}, 'title1', 'center', 'title2', 'right',
-            f'╭───── {RELEASED_RESET}title1{RELEASED_RESET} ─────╮\n'
-            f'│ x = 10           │\n'
-            f'╰───────── {RELEASED_RESET}title2{RELEASED_RESET} ─╯'
+            f'{RESET}╭─────{RESET} {RESET}title1{RESET} {RESET}─────╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────────{RESET} {RESET}title2{RESET} {RESET}─╯{RESET}'
         ),
 
         (
             {'x': 10}, 'title1', 'right', 'title2', 'left',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ x = 10           │\n'
-            f'╰─ {RELEASED_RESET}title2{RELEASED_RESET} ─────────╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─{RESET} {RESET}title2{RESET} {RESET}─────────╯{RESET}'
         ),
         (
             {'x': 10}, 'title1', 'right', 'title2', 'center',
-            f'╭───────── {RELEASED_RESET}title1{RELEASED_RESET} ─╮\n'
-            f'│ x = 10           │\n'
-            f'╰───── {RELEASED_RESET}title2{RELEASED_RESET} ─────╯'
+            f'{RESET}╭─────────{RESET} {RESET}title1{RESET} {RESET}─╮{RESET}\n'
+            f'{RESET}│{RESET} x = 10           {RESET}│{RESET}\n'
+            f'{RESET}╰─────{RESET} {RESET}title2{RESET} {RESET}─────╯{RESET}'
         ),
     ]
 )
@@ -300,6 +305,7 @@ def test_params_panel(
     panel = ParamsPanel(
         params, width=20, title=title, subtitle=subtitle,
         title_align=title_align, title_style='reset',
-        subtitle_align=subtitle_align, subtitle_style='reset'
+        subtitle_align=subtitle_align, subtitle_style='reset',
+        border_style='reset'
     )
     assert str(panel) == result
