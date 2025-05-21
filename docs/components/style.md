@@ -3,12 +3,18 @@
 The **Style** module allows you to customize text styling and colors,
 including in **Outlify** elements.
 
+To view the demo for the **Panel** module use:
+
+```sh
+python -m outlify.style
+```
+
 ## `Colors`
 A class for managing text colors.
 
 ### Available fields
 
-| Field     |   value    | Comments                               |
+| Field     |   Value    | Comments                               |
 |-----------|:----------:|----------------------------------------|
 | `black`   | `\033[30m` |
 | `red`     | `\033[31m` |
@@ -27,7 +33,7 @@ A class for managing text styles.
 
 ### Available fields
 
-| Fields        |    Code    | Comments                               |
+| Fields        |   Value    | Comments                               |
 |---------------|:----------:|----------------------------------------|
 | `bold`        | `\033[1m`  |
 | `dim`         | `\033[2m`  |
@@ -44,7 +50,7 @@ A class for managing text styles.
 !!! question
 
     Why are pre-prepared ansi escape sequences for each style used separately instead of together?
-    (`\033[1m\033[30m` instead of `\033[1;30m`).
+    (`\033[1m\033[30m` instead of `\033[1;30m`)
 
 The difference between terminal processing of the first and second variants
 is very small. If we make a convenient class that will process and create
