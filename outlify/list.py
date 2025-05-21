@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Sequence, Any, Optional, Union
 
-from outlify.style import Style
-from outlify._utils import resolve_width, parse_style, get_reset_by_style
-from outlify._ansi import wrap
+from outlify.style import AnsiCodes
+from outlify._utils import resolve_width, parse_styles, get_reset_by_style
 
 
 __all__ = ['TitledList']
@@ -13,10 +12,10 @@ class ListBase(ABC):
 
     def __init__(
             self, content: Sequence[Any], *, width: Optional[int],
-            title: str, title_separator: str, title_style: Optional[Union[str, Style]] = None,
+            title: str, title_separator: str, title_style: Optional[Sequence[AnsiCodes]],
     ):
         self.width = resolve_width(width)
-        title_style = parse_style(title_style)
+        title_style = parse_styles(title_style)
         title_reset = get_reset_by_style(title_style)
         self.title = self._get_title(title, count=len(content), style=title_style, reset=title_reset)
         self.title_separator = title_separator
@@ -29,8 +28,8 @@ class ListBase(ABC):
         pass
 
     @staticmethod
-    def _get_title(title: str, *, count: int, style: Style, reset: Style) -> str:
-        return wrap(f'{title} ({count})', style, reset)
+    def _get_title(title: str, *, count: int, style: str, reset: str) -> str:
+        return f'{style}{title} ({count}){reset}'
 
     @staticmethod
     def _prepare_content(content: Sequence[Any]) -> list[str]:
@@ -48,7 +47,7 @@ class ListBase(ABC):
 class TitledList(ListBase):
 
     def __init__(
-            self, content: Sequence[Any], *, title: str = 'Content', title_style: Optional[Union[str, Style]] = None,
+            self, content: Sequence[Any], *, title: str = 'Content', title_style: Optional[Sequence[AnsiCodes]] = None,
             separator: str = '  ',
     ):
         """ A simple list for displaying elements with customizable title.
@@ -57,8 +56,7 @@ class TitledList(ListBase):
 
         :param content: element enumeration
         :param title: title displayed before elements
-        :param title_style: ANSI style to apply to the title. Can be a string (e.g., 'red bold') or a `Style` instance.
-                            Allows customization of title color and text style (e.g., bold, underline).
+        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         :param separator: separator between title and elements
         """
         self.separator = separator

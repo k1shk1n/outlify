@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import NamedTuple
 
-from outlify._ansi import AnsiColorsCodes, AnsiStylesCodes, Style  # noqa: F401
+from outlify._ansi import Colors, Styles, AnsiCodes  # noqa: F401
 
 
 class Align(Enum):

@@ -1,22 +1,20 @@
-from typing import Union, Optional, Any
+from typing import Union, Optional, Any, Sequence
 
 import pytest
 
 from outlify.panel import PanelBase, Panel, ParamsPanel
-from outlify.style import Align, BorderStyle, Style
-
-from .common import EMPTY
+from outlify.style import Align, BorderStyle, Colors, Styles, AnsiCodes
 
 
 class ReleasedPanelBase(PanelBase):
     def __init__(
             self, content: str = 'test', *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
-            title_style: Optional[Union[str, Style]] = None,
+            title_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
-            subtitle_style: Optional[Union[str, Style]] = None,
+            subtitle_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
             border: Union[str | BorderStyle] = '╭╮╰╯─│',
-            border_style: Optional[Union[str, Style]] = None,
+            border_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
     ):
         super().__init__(
             content, width=width,
@@ -25,7 +23,7 @@ class ReleasedPanelBase(PanelBase):
             border=border, border_style=border_style
         )
 
-    def get_content(self, content: str, *, width: int, char: str, border_style: Style) -> str:
+    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         return ''
 
 
@@ -86,7 +84,7 @@ def test_parse_border_style(style: Union[str, BorderStyle], result: BorderStyle)
 )
 def test_fill_header(title: str, align: Align, char: str, result: str):
     assert ReleasedPanelBase()._fill_header(
-        title, align=align, width=10, char=char, title_style=EMPTY, title_style_reset=EMPTY, border_style=EMPTY
+        title, align=align, width=10, char=char, title_style='', title_style_reset='', border_style=''
     ) == result
 
 
@@ -104,8 +102,8 @@ def test_fill_header(title: str, align: Align, char: str, result: str):
 def test_get_header(title: str, align: Align, left: str, char: str, right: str, result: str):
     base = ReleasedPanelBase()
     assert base.get_header(
-        title, align=align, title_style=EMPTY, title_style_reset=EMPTY, width=12,
-        left=left, char=char, right=right, border_style=EMPTY
+        title, align=align, title_style='', title_style_reset='', width=12,
+        left=left, char=char, right=right, border_style=''
     ) == result
 
 
@@ -122,7 +120,7 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
 )
 def test_fill(line: str, width: int, char: str, indent: str, result: str):
     assert ReleasedPanelBase().fill(
-        line, width=width, char=char, indent=indent, border_style=EMPTY
+        line, width=width, char=char, indent=indent, border_style=''
     ) == result
 
 
@@ -213,9 +211,9 @@ def test_fill(line: str, width: int, char: str, indent: str, result: str):
 def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_align: str, result: str):
     panel = Panel(
         text, width=20, title=title, subtitle=subtitle,
-        title_align=title_align, title_style=EMPTY,
-        subtitle_align=subtitle_align, subtitle_style=EMPTY,
-        border_style=EMPTY
+        title_align=title_align, title_style='',
+        subtitle_align=subtitle_align, subtitle_style='',
+        border_style=''
     )
     assert str(panel) == result
 
@@ -304,8 +302,8 @@ def test_params_panel(
 ):
     panel = ParamsPanel(
         params, width=20, title=title, subtitle=subtitle,
-        title_align=title_align, title_style=EMPTY,
-        subtitle_align=subtitle_align, subtitle_style=EMPTY,
-        border_style=EMPTY, params_style=EMPTY
+        title_align=title_align, title_style='',
+        subtitle_align=subtitle_align, subtitle_style='',
+        border_style='', params_style=''
     )
     assert str(panel) == result

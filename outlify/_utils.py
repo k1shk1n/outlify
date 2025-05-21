@@ -1,12 +1,7 @@
-from typing import Optional, Union, Any
+from typing import Optional, Union, Any, Sequence
 import shutil
 
-from outlify.style import Align, Style
-from outlify._ansi import AnsiStylesCodes
-
-
-EMPTY = Style()
-RESET = Style(AnsiStylesCodes.reset)
+from outlify.style import Align, Styles
 
 
 def resolve_width(width: Optional[int]) -> int:
@@ -25,20 +20,22 @@ def parse_title_align(align: Union[str, Align]) -> Align:
     return _parse_class(align, Align)
 
 
-def parse_style(style: Union[str, Style]) -> Style:
-    return _parse_class(style, Style)
-
-
 def _parse_class(element: Union[str, Any], cls: Any) -> Any:
     if isinstance(element, cls):
         return element
     return cls(element)
 
 
-def get_reset_by_style(style: Style) -> Style:
+def parse_styles(codes: Optional[Sequence]) -> str:
+    if codes is None:
+        return ''
+    return ''.join(codes)
+
+
+def get_reset_by_style(style: str) -> str:
     """ Return the appropriate reset code for the given style
 
     If the style is empty, returns an empty reset.
     Otherwise, returns the standard reset
     """
-    return RESET if style != '' else EMPTY
+    return Styles.reset if style != '' else ''
