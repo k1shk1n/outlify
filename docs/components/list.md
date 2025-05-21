@@ -79,3 +79,21 @@ Content (3): apple, banana, orange
 ```
 
 </div>
+
+### `title_style`
+
+You can also style title with the list, for example, 
+paint them <span style="color: red;">red</span>, make **bold** or 
+<span style="text-decoration: underline;">underlining</span> the text.
+
+You can pass a style like this:
+
+```python
+from outlify.list import TitledList
+from outlify.style import Colors, Styles
+
+elements = ['elem1', 'elem2']
+print(TitledList(elements, title_style=[Colors.red, Styles.bold]))
+```
+
+For details on styling, see [Styles](style.md).

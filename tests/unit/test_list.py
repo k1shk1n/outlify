@@ -11,7 +11,7 @@ class ReleasedListBase(ListBase):
             separator: str = '  '
     ):
         self.separator = separator
-        super().__init__(content, width=width, title=title, title_separator=': ')
+        super().__init__(content, width=width, title=title, title_separator=': ', title_style=None)
 
     def get_content(self, content: list[str], *, width: int) -> str:
         return ''
@@ -19,15 +19,16 @@ class ReleasedListBase(ListBase):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'title,count,result',
+    'title,count,style,reset,result',
     [
-        ('TITLE', 0, 'TITLE (0)'),
-        ('fake', 10, 'fake (10)'),
-        ('minus', -10, 'minus (-10)'),
+        ('TITLE', 0, '', '', 'TITLE (0)'),
+        ('fake', 10, '', '', 'fake (10)'),
+        ('minus', -10, '', '', 'minus (-10)'),
+        ('TITLE', 0, '\033[31m', '\033[0m', '\033[31mTITLE (0)\033[0m'),
     ]
 )
-def test_get_title(title: str, count: int, result: str):
-    assert ReleasedListBase([])._get_title(title, count) == result
+def test_get_title(title: str, count: int, style: str, reset: str, result: str):
+    assert ReleasedListBase([])._get_title(title, count=count, style=style, reset=reset) == result
 
 
 @pytest.mark.unit
@@ -59,7 +60,7 @@ def test_prepared_content(content: Sequence[Any], result: list[str]):
         (['ruff@1.0.0', 'pytest@1.2.3'], 'Packages', ' :: ', 'Packages (2): ruff@1.0.0 :: pytest@1.2.3'),
     ]
 )
-def test_titled_list(content: Sequence[Any], title: str | None, separator: str | None, result: str):
+def test_titled_list(content: Sequence[Any], title: Optional[str], separator: Optional[str], result: str):
     params = {}
     if title is not None:
         params['title'] = title

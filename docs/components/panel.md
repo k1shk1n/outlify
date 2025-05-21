@@ -43,6 +43,7 @@ For details on customizing the Panel, see [Common customization](#common-customi
 If you want to display parameters, environment variables or anything else, `ParamsPanel` is perfect for you.
 
 Unlike a regular `Panel`, in a `ParamPanel` you do not pass plain text, but a key-value structure:
+
 ```python
 from outlify.panel import ParamsPanel
 
@@ -102,6 +103,10 @@ print(ParamsPanel(parameters, separator=': '))
 ```
 </div>
 
+### `params_style`
+if you want to style variable names in parameters, you can use `params_style`.
+This works the same way as [`title_style` / `subtitle_style` / `border_style`](#title_style-subtitle_style-border_style) 
+
 ### In addition
 Also a feature of `ParamsPanel` is that values are aligned to the `separator` if they are too large, for example:
 
@@ -159,7 +164,7 @@ If you don't specify a size, it will automatically adjust for the terminal size.
 
     For CI systems it is not possible to calculate the size and the Panel will be size 80
 
-### `title`/`subtitle`
+### `title` / `subtitle`
 You can specify titles using `title` (for header title) or `subtitle` (for footer title) like this:
 
 
@@ -179,7 +184,7 @@ print(Panel('My text', title='Header title', subtitle='Footer title'))
 
 </div>
 
-### `title_align`/`subtitle_align`
+### `title_align` / `subtitle_align`
 By default, the title is placed in the `center` of the Panel, 
 but you can move it to the `left` or `right` by specifying:
 
@@ -204,7 +209,7 @@ Works the same way for `subtitle`.
 You can also use the `Align` enum from `outlify.styles` to do this:
 
 ```python
-from outlify.styles import Align
+from outlify.style import Align
 from outlify.panel import Panel
 
 print(Panel('My text', title='Header title', title_align=Align.left))
@@ -220,13 +225,13 @@ print(Panel('My text', title='Header title', title_align=Align.left))
 
 </div>
 
-### `border_style`
-You can replace the default borders using `border_style` like this:
+### `border`
+You can replace the default borders using `border` like this:
 
 ```python
 from outlify.panel import Panel
 
-print(Panel('My text', border_style='╔╗╚╝═║'))
+print(Panel('My text', border='╔╗╚╝═║'))
 ```
 
 <div class="result" markdown>
@@ -242,15 +247,15 @@ print(Panel('My text', border_style='╔╗╚╝═║'))
 or to make it clearer in the code, use `BorderStyle`:
 
 ```python
-from outlify.styles import BorderStyle
+from outlify.style import BorderStyle
 from outlify.panel import Panel
 
-borders = BorderStyle(
+border = BorderStyle(
     lt='╔', rt='╗',
     lb='╚', rb='╝',
     headers='═', sides='║'
 )
-print(Panel('My text', border_style=borders))
+print(Panel('My text', border=border))
 ```
 
 <div class="result" markdown>
@@ -288,7 +293,7 @@ long_text = (
         "just want to print data in a cleaner way, "
         "Outlify helps you do it with style."
     )
-print(Panel(long_text, border_style='╔╗╚╝═'))
+print(Panel(long_text, border='╔╗╚╝═'))
 ```
 
 <div class="result" markdown>
@@ -304,3 +309,20 @@ print(Panel(long_text, border_style='╔╗╚╝═'))
 ```
 
 </div>
+
+### `title_style` / `subtitle_style` / `border_style`
+
+You can also style title with the list, for example, 
+paint them <span style="color: red;">red</span>, make **bold** or 
+<span style="text-decoration: underline;">underlining</span> the text.
+
+You can pass a style like this:
+
+```python
+from outlify.panel import Panel
+from outlify.style import Colors, Styles
+
+print(Panel('Text', title_style=[Colors.red], border_style=[Styles.bold]))
+```
+
+For details on styling, see [Styles](style.md).

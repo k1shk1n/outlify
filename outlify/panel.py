@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Any, Mapping, Iterable, Optional, Union
+from typing import Any, Mapping, Iterable, Sequence, Optional, Union
 import textwrap
 
-from outlify.styles import Align, BorderStyle
-from outlify._utils import resolve_width
+from outlify.style import Align, BorderStyle
+from outlify._utils import resolve_width, parse_title_align, parse_styles, get_reset_by_style
+from outlify._ansi import AnsiCodes
 
 
 __all__ = ['Panel', 'ParamsPanel']
@@ -12,30 +13,32 @@ __all__ = ['Panel', 'ParamsPanel']
 class PanelBase(ABC):
     def __init__(
             self, content: Any, *, width: Optional[int],
-            title: str, title_align: Union[str, Align],
-            subtitle: str, subtitle_align: Union[str, Align],
-            border_style: Union[str | BorderStyle]
+            title: str, title_align: Union[str, Align], title_style: Optional[Sequence[Union[AnsiCodes, str]]],
+            subtitle: str, subtitle_align: Union[str, Align], subtitle_style: Optional[Sequence[Union[AnsiCodes, str]]],
+            border: Union[str | BorderStyle],
+            border_style: Optional[Sequence[AnsiCodes]]
     ):
-        border_style = self._parse_border_style(border_style)
-        self.width = resolve_width(width)
+        border = self._parse_border(border)
+        width = resolve_width(width)
+
+        title_style, subtitle_style = parse_styles(title_style), parse_styles(subtitle_style)
+        title_reset, subtitle_reset = get_reset_by_style(title_style), get_reset_by_style(subtitle_style)
+
+        border_style = parse_styles(border_style)
+        self.border_reset = get_reset_by_style(border_style)
         self.header = self.get_header(
-            title, align=self._resolve_title_align(title_align), width=self.width,
-            left=border_style.lt, char=border_style.headers, right=border_style.rt
+            title, align=parse_title_align(title_align), title_style=title_style, title_style_reset=title_reset,
+            width=width, left=border.lt, char=border.headers, right=border.rt, border_style=border_style
         )
         self.footer = self.get_header(
-            subtitle, align=self._resolve_title_align(subtitle_align), width=self.width,
-            left=border_style.lb, char=border_style.headers, right=border_style.rb
+            subtitle, align=parse_title_align(subtitle_align), title_style=subtitle_style,
+            title_style_reset=subtitle_reset, width=width, left=border.lb, char=border.headers,
+            right=border.rb, border_style=border_style
         )
-        self.content = self.get_content(content, width=self.width, char=border_style.sides)
-
-    @staticmethod
-    def _resolve_title_align(align: Union[str, Align]) -> Align:
-        if isinstance(align, Align):
-            return align
-        return Align(align.lower())
+        self.content = self.get_content(content, width=width, char=border.sides, border_style=border_style)
 
     @abstractmethod
-    def get_content(self, content: str, *, width: int, char: str) -> str:
+    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         pass
 
     @staticmethod
@@ -50,28 +53,40 @@ class PanelBase(ABC):
         return outside - 4
 
     @staticmethod
-    def _parse_border_style(style: str) -> BorderStyle:
+    def _parse_border(style: str) -> BorderStyle:
         if isinstance(style, BorderStyle):
             return style
         if not isinstance(style, str):
             raise ValueError(
-                f'Invalid type for border_style: {style} ({type(style)}) variable is not str or BorderStyle'
+                f'Invalid type for border: {style} ({type(style)}) variable is not str or BorderStyle'
             )
         if len(style) not in [5, 6]:
-            raise ValueError(f'Invalid length for border_style (!= 5 or != 6): length of {style} = {len(style)}')
+            raise ValueError(f'Invalid length for border (!= 5 or != 6): length of {style} = {len(style)}')
         return BorderStyle(
             lt=style[0], rt=style[1],
             lb=style[2], rb=style[3],
-            headers=style[4],
-            sides=style[5] if len(style) == 6 else '',
+            headers=style[4], sides=style[5] if len(style) == 6 else '',
         )
 
-    def get_header(self, title: str, *, width: int, align: Align, left: str, char: str, right: str) -> str:
-        return f'{left}{self._fill_header(title, width=width - 2, align=align, char=char)}{right}'
+    def get_header(
+            self, title: str, *, width: int, align: Align, title_style: str, title_style_reset: str,
+            left: str, char: str, right: str, border_style: str
+    ) -> str:
+        header = self._fill_header(
+            title, width=width - 2, align=align, title_style=title_style, title_style_reset=title_style_reset,
+            char=char, border_style=border_style
+        )
+        return f'{border_style}{left}{header}{right}{self.border_reset}'
 
-    @staticmethod
-    def _fill_header(title: str, *, width: int, align: Align, char: str) -> str:
-        title = f' {title} ' if title else ''
+    def _fill_header(
+            self, title: str, *, width: int, align: Align, title_style: str, title_style_reset: str,
+            char: str, border_style: str
+    ) -> str:
+        if title != '':
+            width += len(str(title_style)) + len(title_style_reset)   # title styling
+            width += len(self.border_reset) + len(str(border_style))  # border styling
+            title = f'{self.border_reset} {title_style}{title}{title_style_reset} {border_style}'
+
         if align == Align.left:
             title = f'{char}{title}'
             return f'{title.ljust(width, char)}'
@@ -80,17 +95,19 @@ class PanelBase(ABC):
         title = f'{title}{char}'
         return title.rjust(width, char)
 
-    @staticmethod
-    def fill(line: str, *, width: int, char: str, indent: str = '') -> str:
+    def fill(self, line: str, *, width: int, char: str, border_style: str, indent: str = '') -> str:
         """ Fill a single line
 
         :param line: the content to be placed inside the panel
         :param width: total available width for the content (excluding side borders)
         :param char: border character to be placed on both sides of the line
+        :param border_style: ANSI style to apply to the border. Can be a string (e.g., 'red bold') or a `Style`
+                             instance. Allows customization of border color and text style (e.g., bold, underline).
         :param indent: indentation added before the content
         :return: a string representing the line wrapped with borders and padded to match the specified width
         """
-        return f'{char} {indent}{line.ljust(width - len(indent))} {char}'
+        border = f'{border_style}{char}{self.border_reset}'
+        return f'{border} {indent}{line.ljust(width - len(indent))} {border}'
 
     def __str__(self) -> str:
         return '\n'.join([self.header, self.content, self.footer])
@@ -103,8 +120,11 @@ class Panel(PanelBase):
     def __init__(
             self, content: str, *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
+            title_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
-            border_style: Union[str | BorderStyle] = '╭╮╰╯─│'
+            subtitle_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
+            border: Union[str | BorderStyle] = '╭╮╰╯─│',
+            border_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
     ):
         """ A simple panel for displaying plain text with customizable borders, title, and subtitle.
 
@@ -117,24 +137,28 @@ class Panel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
+        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param border_style: Border character style. Can be a string representing custom border characters
-                             or an instance of BorderStyle
+        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border: Border character style. Can be a string representing custom border characters
+                       or an instance of BorderStyle
+        :param border_style: Aenumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         """
         super().__init__(
             content, width=width,
-            title=title, title_align=title_align,
-            subtitle=subtitle, subtitle_align=subtitle_align,
-            border_style=border_style
+            title=title, title_align=title_align, title_style=title_style,
+            subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
+            border=border, border_style=border_style
         )
 
-    def get_content(self, content: str, *, width: int, char: str) -> str:
+    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         """ Get prepared panel content
 
         :param content: multi-line string to display in the panel
         :param width: total panel width (including borders)
         :param char: character for the side borders. If empty string, disables wrapping and borders
+        :param border_style: ansi escape sequences
         :return: panel with prepared content
         """
         if not isinstance(content, str):
@@ -153,7 +177,7 @@ class Panel(PanelBase):
             )
             lines.extend(wrapped)
 
-        lines = [self.fill(line, width=width, char=char) for line in lines]
+        lines = [self.fill(line, width=width, char=char, border_style=border_style) for line in lines]
         return '\n'.join(lines)
 
 
@@ -161,9 +185,13 @@ class ParamsPanel(PanelBase):
     def __init__(
             self, content: Mapping[Any, Any], *, width: Optional[int] = None,
             title: str = '', title_align: Union[str, Align] = 'center',
+            title_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
-            border_style: Union[str | BorderStyle] = '╭╮╰╯─│',
-            hidden: Iterable[str] = (), separator: str = ' = '
+            subtitle_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
+            border: Union[str | BorderStyle] = '╭╮╰╯─│',
+            border_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
+            hidden: Iterable[str] = (), separator: str = ' = ',
+            params_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
     ):
         """ A panel for displaying key-value parameters in a formatted layout.
 
@@ -176,29 +204,39 @@ class ParamsPanel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
+        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param border_style: Border character style. Can be a string representing custom border characters
-                             or an instance of BorderStyle
+        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border: Border character style. Can be a string representing custom border characters
+                       or an instance of BorderStyle
+        :param border_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         :param hidden: Iterable of keys from `content` that should be excluded from display.
                        Useful for filtering out sensitive or irrelevant data
         :param separator: key-value separator
+        :param params_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         """
         self.hidden = hidden
         self.separator = separator
+        self.params_style = parse_styles(params_style)
+        self.params_reset = get_reset_by_style(self.params_style)
+
+        # width alignment to styles
+        self._additional_width = len(self.params_style) + len(self.params_reset)
         super().__init__(
             content, width=width,
-            title=title, title_align=title_align,
-            subtitle=subtitle, subtitle_align=subtitle_align,
-            border_style=border_style
+            title=title, title_align=title_align, title_style=title_style,
+            subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
+            border=border, border_style=border_style
         )
 
-    def get_content(self, content: Mapping[Any, Any], *, width: int, char: str) -> str:
+    def get_content(self, content: Mapping[Any, Any], *, width: int, char: str, border_style: str) -> str:
         """ Get prepared panel content
 
         :param content: parameters that should be in the panel
         :param width: total panel width (including borders)
         :param char: character for the side borders. If empty string, disables wrapping and borders
+        :param border_style: ansi escape sequences
         :return: panel with prepared content
         """
         if not isinstance(content, Mapping):
@@ -210,16 +248,20 @@ class ParamsPanel(PanelBase):
         max_key_length = max(len(key) for key in params.keys())
         width_inside = width - max_key_length - len(self.separator)
         indent = ' ' * (max_key_length + len(self.separator))
+        leveled_width = width + self._additional_width
         for key, value in params.items():
             displayed_value = self._mask_value(key, value)
-            line = f"{key.ljust(max_key_length)}{self.separator}{displayed_value}"
+            line = (
+                f"{self.params_style}{key.ljust(max_key_length)}{self.params_reset}"
+                f"{self.separator}{displayed_value}"
+            )
 
             if not char:  # mode without border in sides
                 lines.append(f'  {line}')
-            elif len(line) <= width:  # the whole line fits in the panel
-                lines.append(self.fill(line, width=width, char=char))
+            elif len(line) <= leveled_width:  # the whole line fits in the panel
+                lines.append(self.fill(line, width=leveled_width, char=char, border_style=border_style))
             else:  # it's necessary to split the string
-                lines.extend(self._wrap_line(line, width, width_inside, char, indent))
+                lines.extend(self._wrap_line(line, width, leveled_width, width_inside, char, border_style, indent))
         return '\n'.join(lines)
 
     @staticmethod
@@ -236,27 +278,34 @@ class ParamsPanel(PanelBase):
 
         :param key: parameter name
         :param value: parameter value
-        :return: either the original value or a masked string.
+        :return: either the original value or a masked string
         """
         return "*****" if key in self.hidden else value
 
-    def _wrap_line(self, line: str, width: int, width_inside: int, char: str, indent: str) -> list[str]:
+    def _wrap_line(
+            self, line: str, width: int, leveled_width: int, width_inside: int,
+            char: str, border_style: str, indent: str
+    ) -> list[str]:
         """ Wraps a long line into multiple lines with proper indentation and border formatting
 
         :param line: the full line to wrap
         :param width: full panel width including borders
+        :param width: leveled panel width including borders (for ansi colors)
         :param width_inside: usable width after the key and separator
         :param char: border character
+        :param border_style: ansi escape sequences
         :param indent: indentation for wrapped lines
         :return: list of wrapped and formatted lines
         """
-        head, tail = line[:width], line[width:]
+        head, tail = line[:leveled_width], line[leveled_width:]
         wrapped = textwrap.wrap(
             tail, width=width_inside, replace_whitespace=False,
             drop_whitespace=False, break_on_hyphens=False
         )
-        lines = [self.fill(head, width=width, char=char)]
-        lines.extend(self.fill(part, width=width, char=char, indent=indent) for part in wrapped)
+        lines = [self.fill(head, width=width, char=char, border_style=border_style)]
+        lines.extend(
+            self.fill(part, width=width, char=char, border_style=border_style, indent=indent) for part in wrapped
+        )
         return lines
 
 
@@ -281,7 +330,7 @@ if __name__ == '__main__':
         "Outlify helps you do it with style."
     )
     print(Panel(
-        long_text, title='Long Text Panel Example', subtitle='using another border style', border_style='╔╗╚╝═║'
+        long_text, title='Long Text Panel Example', subtitle='using another border style', border='╔╗╚╝═║'
     ), '', sep='\n')
 
     text = (
@@ -289,7 +338,7 @@ if __name__ == '__main__':
         'but you do not want to output it in raw form or write a nice wrapper yourself, '
         'and the sensitive data should not be visible in the terminal, but you want to know that it is specified'
     )
-    print(Panel(text, subtitle='See ↓ below', border_style='┌┐└┘  '), '', sep='\n')
+    print(Panel(text, subtitle='See ↓ below', border='┌┐└┘  '), '', sep='\n')
     parameters = {
         'first name': 'Vladislav',
         'last name': 'Kishkin',
@@ -297,6 +346,4 @@ if __name__ == '__main__':
         'password': 'fake-password',
         'description': 'This is a fake description to show you how Outlify can wrap text in the Parameters Panel'
     }
-    print(ParamsPanel(
-        parameters, title='Start Parameters', hidden=('password',)
-    ))
+    print(ParamsPanel(parameters, title='Start Parameters', hidden=('password',)))
