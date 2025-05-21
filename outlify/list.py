@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Sequence, Any, Optional, Union
+from typing import Sequence, Any, Optional
 
 from outlify.style import AnsiCodes
 from outlify._utils import resolve_width, parse_styles, get_reset_by_style

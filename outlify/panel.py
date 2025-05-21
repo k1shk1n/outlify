@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Mapping, Iterable, Sequence, Optional, Union
 import textwrap
 
-from outlify.style import Align, BorderStyle, Colors, Styles
+from outlify.style import Align, BorderStyle
 from outlify._utils import resolve_width, parse_title_align, parse_styles, get_reset_by_style
 from outlify._ansi import AnsiCodes
 
