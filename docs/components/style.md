@@ -1,75 +1,58 @@
 # Styles
 
-The **Style** module allows you to style **Outlify** elements
+The **Style** module allows you to customize text styling and colors,
+including in **Outlify** elements.
 
-## `Style`
-The main class that is used to work with styles.
+## `Colors`
+A class for managing text colors.
 
-the class itself is inherited from `str`, as the result of its work will be a string of ansi escape sequences.
+### Available fields
 
-It accepts any number of elements of types:
+| Field     |   value    | Comments                               |
+|-----------|:----------:|----------------------------------------|
+| `black`   | `\033[30m` |
+| `red`     | `\033[31m` |
+| `green`   | `\033[32m` |
+| `yellow`  | `\033[33m` |
+| `blue`    | `\033[34m` |
+| `magenta` | `\033[35m` |
+| `cyan`    | `\033[36m` |
+| `white`   | `\033[37m` |
+| `default` | `\033[39m` |
+| `gray`    | `\033[90m` |
+| `reset`   | `\033[0m`  | reset all styles include colors/styles |
 
-1. `int`: ansi codes
-2. `AnsiColorsCodes` / `AnsiStylesCodes` / base enum `AnsiCodes`: built-in codes
-3. `str`: string separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,
-e.g. `red bold`
+## `Styles`
+A class for managing text styles.
 
-## `AnsiColorsCodes`
-`enum` which contains codes for styling text by color
+### Available fields
 
-### Available values
+| Fields        |    Code    | Comments                               |
+|---------------|:----------:|----------------------------------------|
+| `bold`        | `\033[1m`  |
+| `dim`         | `\033[2m`  |
+| `italic`      | `\033[3m`  |
+| `underline`   | `\033[4m`  |
+| `crossed_out` | `\033[9m`  |
+| `default`     | `\033[22m` |
+| `reset`       | `\033[0m`  | reset all styles include colors/styles |
 
-| Value     | Code | Comments                               |
-|-----------|:----:|----------------------------------------|
-| `black`   | `30` |
-| `red`     | `31` |
-| `green`   | `32` |
-| `yellow`  | `33` |
-| `blue`    | `34` |
-| `magenta` | `35` |
-| `cyan`    | `36` |
-| `white`   | `37` |
-| `default` | `39` |
-| `gray`    | `90` |
-| `reset`   | `0`  | reset all styles include colors/styles |
-
-!!! tip
-
-    You can check available using `AnsiColorsCodes.get_available_values()`
-
-## `AnsiStylesCodes`
-`enum` which contains codes for styling text by highlighting
-
-### Available values:
-
-| Value         | Code | Comments                               |
-|---------------|:----:|----------------------------------------|
-| `bold`        | `1`  |
-| `dim`         | `2`  |
-| `italic`      | `3`  |
-| `underline`   | `4`  |
-| `crossed_out` | `9`  |
-| `default`     | `35` |
-| `reset`       | `0`  | reset all styles include colors/styles |
-
-!!! tip
-
-    You can check available using `AnsiStylesCodes.get_available_values()`
 
 ## Advanced
-### Ansi codes
+### Ansi escape sequences
 
 !!! question
 
-    Why ansi codes (`0`, `31`, etc) are used instead of ready-made ansi escape sequences,
-    as in the same `colorama` (`\033[1m`, `\033[31m`, etc.)
+    Why are pre-prepared ansi escape sequences for each style used separately instead of together?
+    (`\033[1m\033[30m` instead of `\033[1;30m`).
 
-Because using prepared ansi escape sequences we can get strings like `\033[1m\033[31m` 
-using, for example, `f'{Style.bold}{Color.red}'`. Using ansi code we will get strings
-of the form `\033[1;31m`. For a terminal, it is one operation less. And that's only if
-we want to apply two styles, and if there are more styles, it's even slower.
+The difference between terminal processing of the first and second variants
+is very small. If we make a convenient class that will process and create
+one sequence of ansi characters, it will take more time to process it than
+separate ones. Convenience is chosen over hundred-thousandths of a second
+of execution time.
 
-We can compare the execution speed for these operations
+To check the processing time of these two options, you can run this code:
 
 ```python
 from time import time
@@ -80,11 +63,12 @@ def timer(text: str):
     return time() - now
 
 timer('warp up')
-x = timer('\033[31m\033[1mtext\033[0m')
-y = timer('\033[31;1mtext\033[0m')
+x = timer('\033[31m\033[1m\033[0m')
+y = timer('\033[31;1m\033[0m')
 
-print(f'ansi escape sequences: {x:10f}')
-print(f'ansi codes: {y:10f}')
+print('Results:')
+print(f'1. single ansi escape sequence: {x:10f}')
+print(f'2. multiple ansi escape sequence: {y:10f}')
 print(f'{x / y:2f} times faster')
 ```
 
@@ -92,14 +76,12 @@ print(f'{x / y:2f} times faster')
 
 ```
 warp up
-text
-text
------ Results -----
-ansi escape sequences:   0.000005
-ansi codes:   0.000004
+
+
+Results:
+1. single ansi escape sequence:   0.000003
+2. multiple ansi escape sequence:   0.000003
 1.166667 times faster
 ```
 
 </div>
-
-If you use a lot of styles, there may be a noticeable slowdown.

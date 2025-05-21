@@ -86,12 +86,14 @@ You can also style title with the list, for example,
 paint them <span style="color: red;">red</span>, make **bold** or 
 <span style="text-decoration: underline;">underlining</span> the text.
 
-You can pass a style in several ways:
+You can pass a style like this:
 
-1. by the code (`int`) of the style itself
-2. by built-in codes (`AnsiColorsCodes` / `AnsiStylesCodes`, e.g. so `AnsiColorsCodes.red` / `AnsiStylesCodes.bold`)
-3. by string (`str`) separated by spaces, where the codes match the name of the codes in `AnsiColorsCodes` / `AnsiStylesCodes`,
-e.g. `red bold`
-4. by pre-prepared `Style`
+```python
+from outlify.list import TitledList
+from outlify.style import Colors, Styles
 
-For details on styling, see [Style](style.md).
+elements = ['elem1', 'elem2']
+print(TitledList(elements, title_style=[Colors.red, Styles.bold]))
+```
+
+For details on styling, see [Styles](style.md).
