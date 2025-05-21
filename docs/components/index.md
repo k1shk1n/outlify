@@ -44,3 +44,20 @@ Used to output a simple list of headings in a structured form.
 </div>
 
 ---
+
+### Style
+<div class="grid" markdown>
+[**Colors**](style.md#colors)
+
+A class for managing text colors.
+</div>
+
+---
+
+<div class="grid" markdown>
+[**Styles**](style.md#styles_1)
+
+A class for managing text styles.
+</div>
+
+---

@@ -76,7 +76,7 @@ parameters = {'parameter1': 'value1', 'parameter2': 'value2'}
 print(ParamsPanel(parameters, title='Startup Parameters'))
 ```
 
-For more details on how to use Panels, see [Panel](https://k1shk1n.github.io/outlify/latest/components/panel/)
+For more details on how to use Panels, see [Panels](https://k1shk1n.github.io/outlify/latest/components/panel/)
 
 </details>
 
@@ -92,7 +92,22 @@ packages = ['first', 'second', 'third']
 print(TitledList(packages))
 ```
 
-For more details on how to use Lists, see [List](https://k1shk1n.github.io/outlify/latest/components/list/)
+For more details on how to use Lists, see [Lists](https://k1shk1n.github.io/outlify/latest/components/list/)
+
+</details>
+
+<details>
+<summary>Styles</summary>
+
+To styling text and **Outlify** elements, use `Colors` and `Styles`:
+
+```python
+from outlify.style import Colors, Styles
+
+print(f'{Colors.red}{Styles.bold}text')
+```
+
+For more details on how to use Style, see [Style](https://k1shk1n.github.io/outlify/latest/components/style/)
 
 </details>
 

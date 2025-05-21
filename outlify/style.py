@@ -17,3 +17,10 @@ class BorderStyle(NamedTuple):
     rb: str
     headers: str
     sides: str
+
+if __name__ == '__main__':
+    print(f'Outlify allow you {Styles.bold}styling{Styles.reset} your text')
+    print(
+        f'for example, you can {Colors.blue}color{Colors.reset} your text, '
+        f'{Styles.underline}underline{Styles.reset} it.'
+    )
