@@ -280,7 +280,7 @@ class ParamsPanel(PanelBase):
         :param value: parameter value
         :return: either the original value or a masked string
         """
-        return "*****" if key in self.hidden else value
+        return "*****" if key in self.hidden and value else value
 
     def _wrap_line(
             self, line: str, width: int, leveled_width: int, width_inside: int,
