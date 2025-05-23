@@ -1,7 +1,7 @@
 from typing import Sequence
 
 
-__all__ = ['Colors', 'Styles', 'AnsiCodes']
+__all__ = ['Colors', 'Back', 'Styles', 'AnsiCodes']
 
 
 CSI = '\033['  # Control Sequence Introducer
