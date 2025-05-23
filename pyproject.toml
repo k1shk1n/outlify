@@ -60,7 +60,9 @@ docs = [
 line-length = 120
 target-version = "py310"
 output-format = "github"
+exclude = ['tests']
 
 [tool.ruff.lint]
 # See list of rules at: https://docs.astral.sh/ruff/rules/
-select = ["E", "F", "W", "C90"]
+select = ["ALL"]
+ignore = ["T201", "TRY003", "PLR0913", "ANN401", "D100", "D104", "D203", "D213"]

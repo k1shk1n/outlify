@@ -1,14 +1,18 @@
-from typing import Sequence
-
+from collections.abc import Sequence
 
 __all__ = [
-    'Colors', 'Back', 'Styles',
-    'AnsiCodes', 'AnsiColorsCodes', 'AnsiBackColorsCodes', 'AnsiStylesCodes'
+    "AnsiBackColorsCodes",
+    "AnsiCodes",
+    "AnsiColorsCodes",
+    "AnsiStylesCodes",
+    "Back",
+    "Colors",
+    "Styles",
 ]
 
 
-CSI = '\033['  # Control Sequence Introducer
-SGR = 'm'      # Select Graphic Rendition suffix
+CSI = "\033["  # Control Sequence Introducer
+SGR = "m"      # Select Graphic Rendition suffix
 
 
 def code_to_ansi(*codes: int) -> str:
@@ -16,8 +20,8 @@ def code_to_ansi(*codes: int) -> str:
 
 
 class AnsiCodes:
-    def __init__(self):
-        for name in (name for name in dir(self) if not name.startswith('_')):
+    def __init__(self) -> None:
+        for name in (name for name in dir(self) if not name.startswith("_")):
             value = getattr(self, name)
             if isinstance(value, Sequence):
                 setattr(self, name, code_to_ansi(*value))

@@ -12,7 +12,7 @@ __all__ = ["Panel", "ParamsPanel"]
 
 class PanelBase(ABC):
     def __init__(
-            self, content: Any, *, width: int | None,  # noqa: ANN401
+            self, content: Any, *, width: int | None,
             title: str, title_align: str | Align, title_style: Sequence[AnsiCodes | str] | None,
             subtitle: str, subtitle_align: str | Align, subtitle_style: Sequence[AnsiCodes | str] | None,
             border: str | BorderStyle,
