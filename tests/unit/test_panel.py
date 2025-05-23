@@ -23,7 +23,7 @@ class ReleasedPanelBase(PanelBase):
             border=border, border_style=border_style
         )
 
-    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         return ''
 
 
@@ -50,26 +50,28 @@ def test_get_inner_width(width: int, result: int):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'style,result',
+    'style,error,result',
     [
-        ('╭╮╰╯─│', BorderStyle('╭', '╮', '╰', '╯', '─', '│')),
-        ('╭╮╰╯─', BorderStyle('╭', '╮', '╰', '╯', '─', '')),
-        ('123456', BorderStyle('1', '2', '3', '4', '5', '6')),
-        ('12345', BorderStyle('1', '2', '3', '4', '5', '')),
-        (123, None),
-        ('╭╮', None),
-        ('╭╮╰╯─│{', None),
-        (BorderStyle('╭', '╮', '╰', '╯', '─', '│'), BorderStyle('╭', '╮', '╰', '╯', '─', '│')),
-        (BorderStyle('1', '2', '3', '4', '5', '6'), BorderStyle('1', '2', '3', '4', '5', '6')),
-    ]
+        ('╭╮╰╯─│', None, BorderStyle('╭', '╮', '╰', '╯', '─', '│')),
+        ('╭╮╰╯─', None, BorderStyle('╭', '╮', '╰', '╯', '─', '')),
+        ('123456', None, BorderStyle('1', '2', '3', '4', '5', '6')),
+        ('12345', None, BorderStyle('1', '2', '3', '4', '5', '')),
+        (123, TypeError, None),
+        ('╭╮', ValueError, None),
+        ('╭╮╰╯─│{', ValueError, None),
+        (BorderStyle('╭', '╮', '╰', '╯', '─', '│'), None, BorderStyle('╭', '╮', '╰', '╯', '─', '│')),
+        (BorderStyle('1', '2', '3', '4', '5', '6'), None, BorderStyle('1', '2', '3', '4', '5', '6')),
+    ],
 )
-def test_parse_border_style(style: Union[str, BorderStyle], result: BorderStyle):
+def test_parse_border_style(
+        style: Union[str, BorderStyle], error, result: BorderStyle
+):
     base = ReleasedPanelBase()
-    if result is not None:
+    if error is None:
         assert base._parse_border(style) == result
         return
 
-    with pytest.raises(ValueError):
+    with pytest.raises(error):
         base._parse_border(style)
 
 
@@ -101,7 +103,7 @@ def test_fill_header(title: str, align: Align, char: str, result: str):
 )
 def test_get_header(title: str, align: Align, left: str, char: str, right: str, result: str):
     base = ReleasedPanelBase()
-    assert base.get_header(
+    assert base._get_header(
         title, align=align, title_style='', title_style_reset='', width=12,
         left=left, char=char, right=right, border_style=''
     ) == result
@@ -119,7 +121,7 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
     ]
 )
 def test_fill(line: str, width: int, char: str, indent: str, result: str):
-    assert ReleasedPanelBase().fill(
+    assert ReleasedPanelBase()._fill(
         line, width=width, char=char, indent=indent, border_style=''
     ) == result
 

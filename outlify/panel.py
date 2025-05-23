@@ -26,19 +26,19 @@ class PanelBase(ABC):
 
         border_style = parse_styles(border_style)
         self.border_reset = get_reset_by_style(border_style)
-        self.header = self.get_header(
+        self.header = self._get_header(
             title, align=parse_title_align(title_align), title_style=title_style, title_style_reset=title_reset,
             width=width, left=border.lt, char=border.headers, right=border.rt, border_style=border_style,
         )
-        self.footer = self.get_header(
+        self.footer = self._get_header(
             subtitle, align=parse_title_align(subtitle_align), title_style=subtitle_style,
             title_style_reset=subtitle_reset, width=width, left=border.lb, char=border.headers,
             right=border.rb, border_style=border_style,
         )
-        self.content = self.get_content(content, width=width, char=border.sides, border_style=border_style)
+        self.content = self._get_content(content, width=width, char=border.sides, border_style=border_style)
 
     @abstractmethod
-    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         pass
 
     @staticmethod
@@ -71,7 +71,7 @@ class PanelBase(ABC):
             headers=style[4], sides=style[5] if len(style) == max_length_border else "",
         )
 
-    def get_header(
+    def _get_header(
             self, title: str, *, width: int, align: Align, title_style: str, title_style_reset: str,
             left: str, char: str, right: str, border_style: str,
     ) -> str:
@@ -98,7 +98,7 @@ class PanelBase(ABC):
         title = f"{title}{char}"
         return title.rjust(width, char)
 
-    def fill(self, line: str, *, width: int, char: str, border_style: str, indent: str = "") -> str:
+    def _fill(self, line: str, *, width: int, char: str, border_style: str, indent: str = "") -> str:
         """Fill a single line.
 
         :param line: the content to be placed inside the panel
@@ -161,7 +161,7 @@ class Panel(PanelBase):
             border=border, border_style=border_style,
         )
 
-    def get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
         """Get prepared panel content.
 
         :param content: multi-line string to display in the panel
@@ -187,7 +187,7 @@ class Panel(PanelBase):
             )
             lines.extend(wrapped)
 
-        lines = [self.fill(line, width=width, char=char, border_style=border_style) for line in lines]
+        lines = [self._fill(line, width=width, char=char, border_style=border_style) for line in lines]
         return "\n".join(lines)
 
 
@@ -242,7 +242,7 @@ class ParamsPanel(PanelBase):
             border=border, border_style=border_style,
         )
 
-    def get_content(self, content: Mapping[Any, Any], *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: Mapping[Any, Any], *, width: int, char: str, border_style: str) -> str:
         """Get prepared panel content.
 
         :param content: parameters that should be in the panel
@@ -272,7 +272,7 @@ class ParamsPanel(PanelBase):
             if not char:  # mode without border in sides
                 lines.append(f"  {line}")
             elif len(line) <= leveled_width:  # the whole line fits in the panel
-                lines.append(self.fill(line, width=leveled_width, char=char, border_style=border_style))
+                lines.append(self._fill(line, width=leveled_width, char=char, border_style=border_style))
             else:  # it's necessary to split the string
                 lines.extend(self._wrap_line(line, width, leveled_width, width_inside, char, border_style, indent))
         return "\n".join(lines)
@@ -315,9 +315,9 @@ class ParamsPanel(PanelBase):
             tail, width=width_inside, replace_whitespace=False,
             drop_whitespace=False, break_on_hyphens=False,
         )
-        lines = [self.fill(head, width=width, char=char, border_style=border_style)]
+        lines = [self._fill(head, width=width, char=char, border_style=border_style)]
         lines.extend(
-            self.fill(part, width=width, char=char, border_style=border_style, indent=indent) for part in wrapped
+            self._fill(part, width=width, char=char, border_style=border_style, indent=indent) for part in wrapped
         )
         return lines
 
