@@ -16,6 +16,7 @@ authors = [
 maintainers = [
     { name = "Vladislav Kishkin", email = "vladislav.kishkin01@gmail.com" }
 ]
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -29,13 +30,12 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Topic :: Utilities",
 ]
-requires-python = ">=3.10"
-repository = "https://github.com/k1shk1n/outlify"
 keywords = [
     "cli", "output", "logs", "utilities",
     "developer-tools",
     "outlify"
 ]
+repository = "https://github.com/k1shk1n/outlify"
 dependencies = []
 
 [project.optional-dependencies]
@@ -58,6 +58,7 @@ docs = [
 
 [tool.ruff]
 line-length = 120
+indent-width = 4
 target-version = "py310"
 output-format = "github"
 exclude = ['tests']
