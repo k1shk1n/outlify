@@ -43,9 +43,8 @@ class AnsiColorsCodes(AnsiCodes):
     aqua    = 96
     snow    = 97
 
-    default = 39
-    # reset all styles include colors/styles
-    reset   = 0
+    # reset all colors
+    reset   = 39
 
 
 class AnsiBackColorsCodes(AnsiCodes):
@@ -69,9 +68,8 @@ class AnsiBackColorsCodes(AnsiCodes):
     aqua    = 106
     snow    = 107
 
-    default = 49
-    # reset all styles include colors/styles
-    reset   = 0
+    # reset all colors
+    reset   = 49
 
 
 class AnsiStylesCodes(AnsiCodes):
