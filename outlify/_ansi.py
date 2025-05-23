@@ -93,7 +93,6 @@ class AnsiStylesCodes(AnsiCodes):
     reset_hidden      = 28
     reset_crossed_out = 29
 
-    default           = 22
     # reset all styles include colors/styles
     reset             = 0
 
