@@ -100,7 +100,7 @@ class IDAnsiCodes(AnsiCodes):
     orange = [38, 5, 208]
 
 Custom = IDAnsiCodes()
-print(f'{Custom.pink}Colored text{Colors.default}')
+print(f'{Custom.pink}Colored text{Colors.reset}')
 ```
 
 ### RGB Colors
@@ -125,7 +125,7 @@ class RGBAnsiCodes(AnsiCodes):
     orange = [38, 2, 255, 128, 0]
 
 Custom = RGBAnsiCodes()
-print(f'{Custom.pink}Colored text{Colors.default}')
+print(f'{Custom.pink}Colored text{Colors.reset}')
 ```
 
 ## Advanced
