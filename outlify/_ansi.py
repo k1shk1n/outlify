@@ -100,9 +100,3 @@ class AnsiStylesCodes(AnsiCodes):
 Colors = AnsiColorsCodes()
 Back = AnsiBackColorsCodes()
 Styles = AnsiStylesCodes()
-
-class CustomAnsiColorsCodes(AnsiCodes):
-    branded = [38, 2, 255, 165, 0]
-
-custom = CustomAnsiColorsCodes()
-print(f'{custom.branded}123')
