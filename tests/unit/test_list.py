@@ -13,7 +13,7 @@ class ReleasedListBase(ListBase):
         self.separator = separator
         super().__init__(content, width=width, title=title, title_separator=': ', title_style=None)
 
-    def get_content(self, content: list[str], *, width: int) -> str:
+    def _get_content(self, content: list[str], *, width: int) -> str:
         return ''
 
 

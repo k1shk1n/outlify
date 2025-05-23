@@ -1,16 +1,28 @@
 from enum import Enum
 from typing import NamedTuple
 
-from outlify._ansi import Colors, Back, Styles, AnsiCodes, AnsiColorsCodes, AnsiBackColorsCodes, AnsiStylesCodes  # noqa: F401
+from outlify._ansi import (  # noqa: F401
+    AnsiBackColorsCodes,
+    AnsiCodes,
+    AnsiColorsCodes,
+    AnsiStylesCodes,
+    Back,
+    Colors,
+    Styles,
+)
 
 
 class Align(Enum):
-    left = 'left'
-    center = 'center'
-    right = 'right'
+    """Represent text alignment options."""
+
+    left = "left"
+    center = "center"
+    right = "right"
 
 
 class BorderStyle(NamedTuple):
+    """Represent border styling."""
+
     lt: str
     rt: str
     lb: str
@@ -18,9 +30,9 @@ class BorderStyle(NamedTuple):
     headers: str
     sides: str
 
-if __name__ == '__main__':
-    print(f'Outlify allow you {Styles.bold}styling{Styles.reset} your text')
+if __name__ == "__main__":
+    print(f"Outlify allow you {Styles.bold}styling{Styles.reset} your text")
     print(
-        f'for example, you can {Colors.blue}color{Colors.reset} your text, '
-        f'{Styles.underline}underline{Styles.reset} it.'
+        f"for example, you can {Colors.blue}color{Colors.reset} your text, "
+        f"{Styles.underline}underline{Styles.reset} it.",
     )
