@@ -1,4 +1,5 @@
 import functools
+import time
 from typing import Callable, ParamSpec, TypeVar  # noqa: UP035
 
 __all__ = ["timer"]
@@ -40,8 +41,6 @@ def _format_duration(seconds: float) -> str:
 
 
 if __name__ == "__main__":  # pragma: no cover
-    import time
-
     @timer()
     def dummy_func(a: int, b: int) -> int:
         time.sleep(0.001)
