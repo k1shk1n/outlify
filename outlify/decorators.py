@@ -1,5 +1,4 @@
 import functools
-import time
 from typing import Callable, ParamSpec, TypeVar  # noqa: UP035
 
 __all__ = ["timer"]
