@@ -38,3 +38,20 @@ def _format_duration(seconds: float) -> str:
     m = total_m % 60
     h = total_m // 60
     return f"{h:02d}h {m:02d}m {s:02d}.{ms:03d}s"
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import time
+
+    @timer()
+    def dummy_func(a: int, b: int) -> int:
+        time.sleep(0.001)
+        return a + b
+
+    @timer(name="Dummy")
+    def dammy_func_with_custom_name(a: int, b: int) -> int:
+        time.sleep(0.001)
+        return a + b
+
+    dummy_func(1, 2)
+    dammy_func_with_custom_name(1, 2)

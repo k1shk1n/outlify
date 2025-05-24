@@ -67,11 +67,11 @@ class TitledList(ListBase):
         return self.separator.join(content)
 
 
-if __name__ == "__main__":
-    print(  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
+    print(
         "Outlify helps you create list output in a beautiful format\n",
         "The first one is the simplest: a titled list", sep="\n",
     )
-    print(TitledList([  # pragma: no cover
+    print(TitledList([
         "ruff@1.0.0", "pytest@1.2.3", "mkdocs@3.2.1", "mike@0.0.1",
     ], title="Packages"))

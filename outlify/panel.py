@@ -321,17 +321,17 @@ class ParamsPanel(PanelBase):
         return lines
 
 
-if __name__ == "__main__":
-    text = (  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
+    text = (
         "Outlify helps you render beautiful command-line panels.\n"
         "You can customize borders, alignment, etc.\n\n"
         "This is just a simple text panel."
     )
-    print(Panel(  # pragma: no cover
+    print(Panel(
         text, title="Welcome to Outlify", subtitle="Text Panel Demo", title_align="left", subtitle_align="right",
     ), "", sep="\n")
 
-    long_text = (  # pragma: no cover
+    long_text = (
         "In a world where CLI tools are often boring and unstructured, "
         "Outlify brings beauty and structure to your terminal output. "
         "It allows developers to create elegant panels with customizable borders, titles, subtitles, "
@@ -341,21 +341,21 @@ if __name__ == "__main__":
         "Whether you're building debugging tools, reporting pipelines, or just want to print data in a cleaner way, "
         "Outlify helps you do it with style."
     )
-    print(Panel(  # pragma: no cover
+    print(Panel(
         long_text, title="Long Text Panel Example", subtitle="using another border style", border="╔╗╚╝═║",
     ), "", sep="\n")
 
-    text = (  # pragma: no cover
+    text = (
         "or maybe you want to output parameters that came to your CLI input, "
         "but you do not want to output it in raw form or write a nice wrapper yourself, "
         "and the sensitive data should not be visible in the terminal, but you want to know that it is specified"
     )
-    print(Panel(text, subtitle="See ↓ below", border="┌┐└┘  "), "", sep="\n")  # pragma: no cover
-    parameters = {  # pragma: no cover
+    print(Panel(text, subtitle="See ↓ below", border="┌┐└┘  "), "", sep="\n")
+    parameters = {
         "first name": "Vladislav",
         "last name": "Kishkin",
         "username": "k1shk1n",
         "password": "fake-password",
         "description": "This is a fake description to show you how Outlify can wrap text in the Parameters Panel",
     }
-    print(ParamsPanel(parameters, title="Start Parameters", hidden=("password",)))  # pragma: no cover
+    print(ParamsPanel(parameters, title="Start Parameters", hidden=("password",)))
