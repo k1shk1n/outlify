@@ -12,14 +12,14 @@ from outlify.decorators import timer
         (None, 1.0, 1.1, "Function 'dummy_func' took 00h 00m 00.100s"),
         ("TestFunc", 1.0, 1.5, "TestFunc took 00h 00m 00.500s"),
 
-        ("fake", 0.0, 1.0, "fake took 00h 00m 01.000s"),
-        ("fake", 0.0, 1.123, "fake took 00h 00m 01.123s"),
-        ("fake", 0.0, 60.0, "fake took 00h 01m 00.000s"),
-        ("fake", 0.0, 61.0, "fake took 00h 01m 01.000s"),
-        ("fake", 0.0, 3600.0, "fake took 01h 00m 00.000s"),
-        ("fake", 0.0, 3601.0, "fake took 01h 00m 01.000s"),
-        ("fake", 0.0, 3660.0, "fake took 01h 01m 00.000s"),
-        ("fake", 0.0, 3661.0, "fake took 01h 01m 01.000s"),
+        ("test calculate", 0.0, 1.0, "test calculate took 00h 00m 01.000s"),
+        ("test calculate", 0.0, 1.123, "test calculate took 00h 00m 01.123s"),
+        ("test calculate", 0.0, 60.0, "test calculate took 00h 01m 00.000s"),
+        ("test calculate", 0.0, 61.0, "test calculate took 00h 01m 01.000s"),
+        ("test calculate", 0.0, 3600.0, "test calculate took 01h 00m 00.000s"),
+        ("test calculate", 0.0, 3601.0, "test calculate took 01h 00m 01.000s"),
+        ("test calculate", 0.0, 3660.0, "test calculate took 01h 01m 00.000s"),
+        ("test calculate", 0.0, 3661.0, "test calculate took 01h 01m 01.000s"),
     ]
 )
 def test_timer_decorator_outputs_timing(name: str, start: float, end: float, result: str):
