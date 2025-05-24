@@ -10,7 +10,7 @@ def resolve_width(width: int | None) -> int:
         return width
     if width is not None:
         error = f"Invalid type for width: {width} is not int"
-        raise ValueError(error)
+        raise TypeError(error)
 
     try:
         return shutil.get_terminal_size().columns
