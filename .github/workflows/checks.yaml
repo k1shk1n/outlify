@@ -39,8 +39,27 @@ jobs:
           uv venv .venv
           uv pip install .[dev]
 
+      - name: Run unit tests
+        run: uv run pytest -m unit
+
+  coverage:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv venv .venv
+          uv pip install .[dev]
+
       - name: Run unit tests with coverage
-        if: matrix.python-version == '3.13'
         run: |
           uv run pytest -m unit \
             --cov=outlify \
@@ -49,7 +68,6 @@ jobs:
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
-        if: matrix.python-version == '3.13'
         with:
-          name: coverage-report
+          name: coverage
           path: coverage.xml
