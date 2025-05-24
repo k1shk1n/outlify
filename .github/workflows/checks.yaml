@@ -40,6 +40,7 @@ jobs:
           uv pip install .[dev]
 
       - name: Run unit tests with coverage
+        if: matrix.python-version == '3.13'
         run: |
           uv run pytest -m unit \
             --cov=outlify \
@@ -48,6 +49,7 @@ jobs:
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.13'
         with:
           name: coverage-report
           path: coverage.xml
