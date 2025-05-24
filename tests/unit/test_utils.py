@@ -3,7 +3,7 @@ from typing import Union
 import pytest
 
 from outlify.style import Align
-from outlify._utils import parse_title_align
+from outlify._utils import parse_title_align, resolve_width
 
 
 @pytest.mark.unit
@@ -20,3 +20,8 @@ from outlify._utils import parse_title_align
 )
 def test_resolve_title_align(align: Union[str, Align], result: Align):
     assert parse_title_align(align) == result
+
+
+def test_resolve_width():
+    with pytest.raises(ValueError):
+        resolve_width({})

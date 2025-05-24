@@ -67,3 +67,17 @@ def test_titled_list(content: Sequence[Any], title: Optional[str], separator: Op
     if separator is not None:
         params['separator'] = separator
     assert str(TitledList(content, **params)) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'list_,result',
+    [
+        (
+            TitledList([]),
+            "TitledList(content='', separator='  ', title='Content (0)', title_separator=': ', width=80)",
+        ),
+    ]
+)
+def test_repr(list_: TitledList, result: str):
+    assert repr(list_) == result
