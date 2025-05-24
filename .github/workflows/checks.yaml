@@ -43,7 +43,6 @@ jobs:
         run: uv run pytest -m unit
 
   coverage:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
@@ -64,10 +63,17 @@ jobs:
           uv run pytest -m unit \
             --cov=outlify \
             --cov-report=term \
-            --cov-report=xml
+            --cov-report=xml \
+            --cov-report=html
 
-      - name: Upload coverage report
+      - name: Upload coverage XML
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-xml
           path: coverage.xml
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov
