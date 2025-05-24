@@ -38,7 +38,7 @@ class PanelBase(ABC):
         self.content = self._get_content(content, width=width, char=border.sides, border_style=border_style)
 
     @abstractmethod
-    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: Any, *, width: int, char: str, border_style: str) -> str:
         pass
 
     @staticmethod
@@ -120,7 +120,8 @@ class PanelBase(ABC):
         )
 
     def __repr__(self) -> str:
-        return self.__str__()
+        content = ", ".join(f"{name}={getattr(self, name)!r}" for name in dir(self) if not name.startswith("_"))
+        return f"{self.__class__.__name__}({content})"
 
 
 class Panel(PanelBase):
@@ -161,7 +162,7 @@ class Panel(PanelBase):
             border=border, border_style=border_style,
         )
 
-    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: Any, *, width: int, char: str, border_style: str) -> str:
         """Get prepared panel content.
 
         :param content: multi-line string to display in the panel
@@ -170,9 +171,7 @@ class Panel(PanelBase):
         :param border_style: ansi escape sequences
         :return: panel with prepared content
         """
-        if not isinstance(content, str):
-            error = f"Invalid type for content: {type(content)} is not str"
-            raise TypeError(error)
+        content = str(content)
         width = self._get_inner_width(width)
 
         lines = []
