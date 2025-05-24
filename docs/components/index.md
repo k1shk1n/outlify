@@ -47,9 +47,11 @@ Used to output a simple list of headings in a structured form.
 
 ### Style
 <div class="grid" markdown>
-[**Colors**](style.md#colors-back)
+[**Colors / Back**](style.md#colors-back)
 
-A class for managing text colors.
+A classes for managing colors. 
+`Colors` for text colors aka foreground. 
+`Back` for background.
 </div>
 
 ---
@@ -65,9 +67,8 @@ A class for managing text styles.
 <div class="grid" markdown>
 [**AnsiCodes**](style.md#ansicodes)
 
-A classes for managing colors. 
-`Colors` for text colors aka foreground. 
-`Back` for background.
+This is parent class for `Colors`, `Back`, `Styles`. 
+But it can help you in your customization as well. 
 </div>
 
 ---

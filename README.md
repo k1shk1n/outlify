@@ -56,6 +56,8 @@ python -m outlify.panel
 
 Each component is easy to use and comes with built-in demos. See below for examples and usage.
 
+### Static
+
 <details>
 <summary>Panels</summary>
 

@@ -152,7 +152,7 @@ class Panel(PanelBase):
         :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
-        :param border_style: Aenumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
         """
         super().__init__(
             content, width=width,
