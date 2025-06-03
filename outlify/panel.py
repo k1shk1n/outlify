@@ -147,13 +147,16 @@ class Panel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
-        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
+                               including Colors, Back and Styles
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
-        :param border_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         """
         super().__init__(
             content, width=width,
@@ -215,17 +218,21 @@ class ParamsPanel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
-        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
+                               including Colors, Back and Styles
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
-        :param border_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         :param hidden: Iterable of keys from `content` that should be excluded from display.
                        Useful for filtering out sensitive or irrelevant data
         :param separator: key-value separator
-        :param params_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param params_style: enumeration of parameter name styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         """
         self.hidden = hidden
         self.separator = separator
