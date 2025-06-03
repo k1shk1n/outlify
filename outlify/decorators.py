@@ -98,7 +98,7 @@ if __name__ == "__main__":  # pragma: no cover
     def dummy_func_with_custom_fmt(a: int, b: int) -> int:
         return a + b
 
-    @timer(label_style=[Colors.blue], time_style=[Colors.skyblue, Styles.underline])
+    @timer(label_style=[Colors.red], time_style=[Colors.crimson, Styles.underline])
     def colored_timer(a: int, b: int) -> int:
         time.sleep(0.001)
         return a + b
