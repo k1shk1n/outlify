@@ -79,9 +79,9 @@ def test_parse_border_style(
 @pytest.mark.parametrize(
     'title,align,char,result',
     [
-        ('TITLE', Align.left, '-', '- TITLE --'),
-        ('TITLE', Align.center, '-', '- TITLE --'),
-        ('TITLE', Align.right, '-', '-- TITLE -'),
+        ('TITLE', Align.left, '-', '-TITLE----'),
+        ('TITLE', Align.center, '-', '--TITLE---'),
+        ('TITLE', Align.right, '-', '----TITLE-'),
     ]
 )
 def test_fill_header(title: str, align: Align, char: str, result: str):
@@ -94,10 +94,10 @@ def test_fill_header(title: str, align: Align, char: str, result: str):
 @pytest.mark.parametrize(
     'title,align,left,char,right,result',
     [
-        ('TITLE', Align.left, '╭', '-', '╮', '╭- TITLE --╮'),
-        ('TITLE', Align.center, '╭', '-', '╮', '╭- TITLE --╮'),
-        ('TITLE', Align.right, '╭', '-', '╮', '╭-- TITLE -╮'),
-        ('fake', Align.center, '╭', '-', '╮', '╭-- fake --╮'),
+        ('TITLE', Align.left, '╭', '-', '╮', '╭-TITLE----╮'),
+        ('TITLE', Align.center, '╭', '-', '╮', '╭--TITLE---╮'),
+        ('TITLE', Align.right, '╭', '-', '╮', '╭----TITLE-╮'),
+        ('fake', Align.center, '╭', '-', '╮', '╭---fake---╮'),
         ('fake', Align.center, '+', ' ', '+', '+   fake   +'),
     ]
 )
@@ -153,60 +153,60 @@ def test_fill(line: str, width: int, char: str, indent: str, result: str):
 
         (
             'test', 'title1', 'left', 'title2', 'left', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ test             │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             'test', 'title1', 'center', 'title2', 'center', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ test             │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
 
         (
             'test', 'title1', 'right', 'title2', 'right', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ test             │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
         (
             'test', 'title1', 'left', 'title2', 'center', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ test             │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
         (
             'test', 'title1', 'left', 'title2', 'right', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ test             │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
 
         (
             'test', 'title1', 'center', 'title2', 'left', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ test             │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             'test', 'title1', 'center', 'title2', 'right', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ test             │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
 
         (
             'test', 'title1', 'right', 'title2', 'left', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ test             │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             'test', 'title1', 'right', 'title2', 'center', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ test             │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
 
         (
@@ -248,60 +248,60 @@ def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_
 
         (
             {'x': 10}, 'title1', 'left', 'title2', 'left', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ x = 10           │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             {'x': 10}, 'title1', 'center', 'title2', 'center', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ x = 10           │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
         (
             {'x': 10}, 'title1', 'right', 'title2', 'right', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ x = 10           │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
 
         (
             {'x': 10}, 'title1', 'left', 'title2', 'center', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ x = 10           │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
         (
             {'x': 10}, 'title1', 'left', 'title2', 'right', '╭╮╰╯─│',
-            '╭─ title1 ─────────╮\n'
+            '╭─title1───────────╮\n'
             '│ x = 10           │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
 
         (
             {'x': 10}, 'title1', 'center', 'title2', 'left', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ x = 10           │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             {'x': 10}, 'title1', 'center', 'title2', 'right', '╭╮╰╯─│',
-            '╭───── title1 ─────╮\n'
+            '╭──────title1──────╮\n'
             '│ x = 10           │\n'
-            '╰───────── title2 ─╯'
+            '╰───────────title2─╯'
         ),
 
         (
             {'x': 10}, 'title1', 'right', 'title2', 'left', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ x = 10           │\n'
-            '╰─ title2 ─────────╯'
+            '╰─title2───────────╯'
         ),
         (
             {'x': 10}, 'title1', 'right', 'title2', 'center', '╭╮╰╯─│',
-            '╭───────── title1 ─╮\n'
+            '╭───────────title1─╮\n'
             '│ x = 10           │\n'
-            '╰───── title2 ─────╯'
+            '╰──────title2──────╯'
         ),
 
         (

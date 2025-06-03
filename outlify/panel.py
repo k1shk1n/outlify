@@ -88,7 +88,7 @@ class PanelBase(ABC):
         if title != "":
             width += len(str(title_style)) + len(title_style_reset)   # title styling
             width += len(self.border_reset) + len(str(border_style))  # border styling
-            title = f"{self.border_reset} {title_style}{title}{title_style_reset} {border_style}"
+            title = f"{self.border_reset}{title_style}{title}{title_style_reset}{border_style}"
 
         if align == Align.left:
             title = f"{char}{title}"
