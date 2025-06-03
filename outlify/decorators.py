@@ -1,6 +1,9 @@
 import functools
 import time
-from typing import Callable, ParamSpec, TypeVar  # noqa: UP035
+from typing import Callable, ParamSpec, Sequence, TypeVar  # noqa: UP035
+
+from outlify._utils import get_reset_by_style, parse_styles
+from outlify.style import AnsiCodes
 
 __all__ = ["timer"]
 
@@ -10,12 +13,30 @@ R = TypeVar("R")
 
 
 def timer(
-        name: str | None = None,
+        label: str | None = None,
+        label_style: Sequence[AnsiCodes] | None = None,
+        time_format: str = "{h:02}:{m:02}:{s:02}.{ms:03}",
+        time_style: Sequence[AnsiCodes] | None = None,
         output_func: Callable[[str], None] = print,
 ) -> Callable[[Callable[P, R]], Callable[P, R]]:
     """Time the function.
 
-    :param name: custom name instead of "Function {function name}",
+    :param label: optional custom label; if not provided, defaults to "Function {function name}"
+    :param label_style: enumeration of label styles. Any class inherited from AnsiCodes,
+                        including Colors, Back and Styles
+    :param time_format: a string format specifying how the duration will be displayed.
+        The following placeholders are supported:
+            {h} - hours,
+            {m} - minutes (0-59),
+            {s} - seconds (0-59),
+            {ms} - milliseconds (0-999).
+
+        You can use any valid Python `str.format` syntax.
+        Example: "{h:02}:{m:02}:{s:02}.{ms:03}" → "00:00:05.123"
+
+        Custom example: "{m} min {s} sec" → "1 min 23 sec"
+    :param time_style: enumeration of time styles. Any class inherited from AnsiCodes,
+                       including Colors, Back and Styles
     :param output_func: function for outputting measurements
     """
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
@@ -23,33 +44,70 @@ def timer(
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             start = time.perf_counter()
             result = func(*args, **kwargs)
-            duration = _format_duration(time.perf_counter() - start)
-            label = name if name else f"Function {func.__name__!r}"
-            output_func(f"{label} took {duration}")
+            duration = _format_duration(time.perf_counter() - start, fmt=time_format)
+
+            message = _get_message(duration, time_style, label, label_style, funcname=repr(func.__name__))
+            output_func(message)
             return result
         return wrapper
     return decorator
 
 
-def _format_duration(seconds: float) -> str:
-    total_ms = int(seconds * 1000)
-    ms, total_s = total_ms % 1000, total_ms // 1000
-    s, total_m = total_s % 60, total_s // 60
-    m = total_m % 60
-    h = total_m // 60
-    return f"{h:02d}h {m:02d}m {s:02d}.{ms:03d}s"
+def _format_duration(seconds: float, *, fmt: str) -> str:
+    """Format the duration specified in seconds according to the specified pattern."""
+    total_milliseconds = int(seconds * 1000)
+
+    total_seconds, milliseconds = divmod(total_milliseconds, 1000)
+    total_minutes, seconds = divmod(total_seconds, 60)
+    hours, minutes = divmod(total_minutes, 60)
+    return fmt.format(h=hours, m=minutes, s=seconds, ms=milliseconds)
+
+
+def _get_message(
+        duration: str, time_style: Sequence[AnsiCodes] | None,
+        label: str | None, label_style: Sequence[AnsiCodes] | None, funcname: str,
+) -> str:
+    label = label if label else f"Function {funcname}"
+    label = _styling_text(label, style=label_style)
+    duration = _styling_text(duration, style=time_style)
+    return f"{label} took {duration}"
+
+
+def _styling_text(text: str, style: Sequence[AnsiCodes] | None) -> str:
+    style = parse_styles(style)
+    reset = get_reset_by_style(style)
+    return f"{style}{text}{reset}"
 
 
 if __name__ == "__main__":  # pragma: no cover
+    from unittest.mock import patch
+
+    from outlify.style import Colors, Styles
+
     @timer()
     def dummy_func(a: int, b: int) -> int:
         time.sleep(0.001)
         return a + b
 
-    @timer(name="Dummy")
-    def dammy_func_with_custom_name(a: int, b: int) -> int:
+    @timer(label="Dummy")
+    def dummy_func_with_custom_name(a: int, b: int) -> int:
         time.sleep(0.001)
         return a + b
 
-    dummy_func(1, 2)
-    dammy_func_with_custom_name(1, 2)
+    @timer(label="Custom time format", time_format="{m} min {s}.{ms:03} sec")
+    def dummy_func_with_custom_fmt(a: int, b: int) -> int:
+        return a + b
+
+    @timer(label_style=[Colors.blue], time_style=[Colors.skyblue, Styles.underline])
+    def colored_timer(a: int, b: int) -> int:
+        time.sleep(0.001)
+        return a + b
+
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 0.123]):
+        dummy_func(1, 2)
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 1.23]):
+        dummy_func_with_custom_name(1, 2)
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 123.345]):
+        dummy_func_with_custom_fmt(2, 3)
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 3723.456]):
+        colored_timer(1, 2)
