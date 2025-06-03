@@ -329,13 +329,15 @@ class ParamsPanel(PanelBase):
 
 
 if __name__ == "__main__":  # pragma: no cover
+    from outlify.style import Colors
+
     text = (
         "Outlify helps you render beautiful command-line panels.\n"
         "You can customize borders, alignment, etc.\n\n"
         "This is just a simple text panel."
     )
     print(Panel(
-        text, title="Welcome to Outlify", subtitle="Text Panel Demo", title_align="left", subtitle_align="right",
+        text, title=" Welcome to Outlify ", subtitle="Text Panel Demo", title_align="left", subtitle_align="right",
     ), "", sep="\n")
 
     long_text = (
@@ -349,7 +351,8 @@ if __name__ == "__main__":  # pragma: no cover
         "Outlify helps you do it with style."
     )
     print(Panel(
-        long_text, title="Long Text Panel Example", subtitle="using another border style", border="╔╗╚╝═║",
+        long_text, title="[ Long Text Panel Example ]", subtitle="using another border and border style",
+        border="╔╗╚╝═║", border_style=[Colors.gray],
     ), "", sep="\n")
 
     text = (
