@@ -33,18 +33,26 @@ def timer(
 
         You can use any valid Python `str.format` syntax.
         Example: "{h:02}:{m:02}:{s:02}.{ms:03}" → "00:00:05.123"
-
         Custom example: "{m} min {s} sec" → "1 min 23 sec"
     :param time_style: enumeration of time styles. Any class inherited from AnsiCodes,
                        including Colors, Back and Styles
     :param output_func: function for outputting measurements
+
+    :raises KeyError: used invalid key(s) of 'time_format' format-string
     """
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
         @functools.wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
             start = time.perf_counter()
             result = func(*args, **kwargs)
-            duration = _format_duration(time.perf_counter() - start, fmt=time_format)
+            try:
+                duration = _format_duration(time.perf_counter() - start, fmt=time_format)
+            except KeyError:
+                error = (
+                    "Unavailable key(s) in 'time_format' format-string. "
+                    "Available keys: h - hours, m - minutes, s - seconds, ms - milliseconds"
+                )
+                raise KeyError(error) from None
 
             message = _get_message(duration, time_style, label, label_style, funcname=repr(func.__name__))
             output_func(message)
