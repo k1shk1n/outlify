@@ -94,28 +94,55 @@ if __name__ == "__main__":  # pragma: no cover
 
     @timer()
     def dummy_func(a: int, b: int) -> int:
-        time.sleep(0.001)
         return a + b
+
+    print("""
+    @timer()
+    def dummy_func(a: int, b: int) -> int:
+        return a + b
+    """)
+
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 0.123]):
+        dummy_func(1, 2)
+
 
     @timer(label="Dummy")
     def dummy_func_with_custom_name(a: int, b: int) -> int:
-        time.sleep(0.001)
         return a + b
+
+    print("""
+    @timer(label="Dummy")
+    def dummy_func_with_custom_name(a: int, b: int) -> int:
+        return a + b
+    """)
+
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 1.23]):
+        dummy_func_with_custom_name(1, 2)
+
 
     @timer(label="Custom time format", time_format="{m} min {s}.{ms:03} sec")
     def dummy_func_with_custom_fmt(a: int, b: int) -> int:
         return a + b
 
-    @timer(label_style=[Colors.red], time_style=[Colors.crimson, Styles.underline])
-    def colored_timer(a: int, b: int) -> int:
-        time.sleep(0.001)
+    print("""
+    @timer(label="Custom time format", time_format="{m} min {s}.{ms:03} sec")
+    def dummy_func_with_custom_fmt(a: int, b: int) -> int:
         return a + b
+    """)
 
-    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 0.123]):
-        dummy_func(1, 2)
-    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 1.23]):
-        dummy_func_with_custom_name(1, 2)
     with patch("outlify.decorators.time.perf_counter", side_effect=[0, 123.345]):
         dummy_func_with_custom_fmt(2, 3)
+
+
+    @timer(label_style=[Colors.red], time_style=[Colors.crimson, Styles.underline])
+    def colored_timer(a: int, b: int) -> int:
+        return a + b
+
+    print("""
+    @timer(label_style=[Colors.red], time_style=[Colors.crimson, Styles.underline])
+    def colored_timer(a: int, b: int) -> int:
+        return a + b
+    """)
+
     with patch("outlify.decorators.time.perf_counter", side_effect=[0, 3723.456]):
         colored_timer(1, 2)
