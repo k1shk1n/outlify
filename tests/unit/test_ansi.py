@@ -3,6 +3,31 @@ import pytest
 from outlify._ansi import Colors, Back, Styles, AnsiCodes
 
 
+class IDAnsiCodes(AnsiCodes):
+    pink   = [38, 5, 207]
+    orange = [38, 5, 208]
+
+class RGBAnsiCodes(AnsiCodes):
+    pink   = [38, 2, 255, 192, 203]
+    orange = [38, 2, 255, 128, 0]
+
+CustomID = IDAnsiCodes()
+CustomRGB = RGBAnsiCodes()
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'color,result',
+    [
+        (CustomID.pink,    '\033[38;5;207m'),
+        (CustomID.orange,  '\033[38;5;208m'),
+        (CustomRGB.pink,   '\033[38;2;255;192;203m'),
+        (CustomRGB.orange, '\033[38;2;255;128;0m'),
+    ]
+)
+def test_custom_ansicodes(color: AnsiCodes, result: str):
+    assert color == result
+
+
 @pytest.mark.unit
 @pytest.mark.parametrize(
     'color,result',

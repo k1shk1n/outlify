@@ -30,7 +30,7 @@ class BorderStyle(NamedTuple):
     headers: str
     sides: str
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     print(f"Outlify allow you {Styles.bold}styling{Styles.reset} your text")
     print(
         f"for example, you can {Colors.blue}color{Colors.reset} your text, "

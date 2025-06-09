@@ -145,21 +145,21 @@ of execution time.
 To check the processing time of these two options, you can run this code:
 
 ```python
-from time import time
+import time
 
 def timer(text: str):
-    now = time()
+    now = time.time()
     print(text)
-    return time() - now
+    return time.time() - now
 
 timer('warp up')
 x = timer('\033[31m\033[1m\033[0m')
 y = timer('\033[31;1m\033[0m')
 
-print('Results:')
-print(f'1. single ansi escape sequence: {x:10f}')
-print(f'2. multiple ansi escape sequence: {y:10f}')
-print(f'{x / y:2f} times faster')
+print("--- Timing Results ---")
+print(f"1. Multiple sequences : {x:.10f} seconds")
+print(f"2. Single sequence    : {y:.10f} seconds")
+print(f"Ratio (x/y)           : {x / y:.4f} faster")
 ```
 
 <div class="result" markdown>
@@ -168,10 +168,10 @@ print(f'{x / y:2f} times faster')
 warp up
 
 
-Results:
-1. single ansi escape sequence:   0.000003
-2. multiple ansi escape sequence:   0.000003
-1.166667 times faster
+--- Timing Results ---
+1. Multiple sequences : 0.0000038147 seconds
+2. Single sequence    : 0.0000033379 seconds
+Ratio (x/y)           : 1.1429 faster
 ```
 
 </div>

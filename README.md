@@ -56,6 +56,8 @@ python -m outlify.panel
 
 Each component is easy to use and comes with built-in demos. See below for examples and usage.
 
+### Static
+
 <details>
 <summary>Panels</summary>
 
@@ -108,6 +110,25 @@ print(f'{Colors.red}{Styles.bold}text')
 ```
 
 For more details on how to use Style, see [Style](https://k1shk1n.github.io/outlify/latest/components/style/)
+
+</details>
+<details>
+<summary>Decorators</summary>
+
+You can also use **Outlify's** utility **Decorators**
+
+```python
+import time
+from outlify.decorators import timer
+
+@timer()
+def dummy():
+    time.sleep(1)
+
+dummy()
+```
+
+For more details on how to use Style, see [Decorators](https://k1shk1n.github.io/outlify/latest/components/decorators/)
 
 </details>
 

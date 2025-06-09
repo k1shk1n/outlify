@@ -31,75 +31,75 @@ class AnsiCodes:
 
 class AnsiColorsCodes(AnsiCodes):
     # standard colors
-    black   = 30
-    red     = 31
-    green   = 32
-    yellow  = 33
-    blue    = 34
-    magenta = 35
-    cyan    = 36
-    white   = 37
+    black   : str = 30
+    red     : str = 31
+    green   : str = 32
+    yellow  : str = 33
+    blue    : str = 34
+    magenta : str = 35
+    cyan    : str = 36
+    white   : str = 37
 
     # bright colors
-    gray    = 90
-    crimson = 91
-    lime    = 92
-    gold    = 93
-    skyblue = 94
-    violet  = 95
-    aqua    = 96
-    snow    = 97
+    gray    : str = 90
+    crimson : str = 91
+    lime    : str = 92
+    gold    : str = 93
+    skyblue : str = 94
+    violet  : str = 95
+    aqua    : str = 96
+    snow    : str = 97
 
     # reset all colors
-    reset   = 39
+    reset   : str = 39
 
 
 class AnsiBackColorsCodes(AnsiCodes):
     # standard colors
-    black   = 40
-    red     = 41
-    green   = 42
-    yellow  = 43
-    blue    = 44
-    magenta = 45
-    cyan    = 46
-    white   = 47
+    black   : str = 40
+    red     : str = 41
+    green   : str = 42
+    yellow  : str = 43
+    blue    : str = 44
+    magenta : str = 45
+    cyan    : str = 46
+    white   : str = 47
 
     # bright colors
-    gray    = 100
-    crimson = 101
-    lime    = 102
-    gold    = 103
-    skyblue = 104
-    violet  = 105
-    aqua    = 106
-    snow    = 107
+    gray    : str = 100
+    crimson : str = 101
+    lime    : str = 102
+    gold    : str = 103
+    skyblue : str = 104
+    violet  : str = 105
+    aqua    : str = 106
+    snow    : str = 107
 
     # reset all colors
-    reset   = 49
+    reset   : str = 49
 
 
 class AnsiStylesCodes(AnsiCodes):
-    bold              = 1
-    dim               = 2
-    italic            = 3
-    underline         = 4
-    blink             = 5
-    inverse           = 7
-    hidden            = 8
-    crossed_out       = 9
+    bold              : str = 1
+    dim               : str = 2
+    italic            : str = 3
+    underline         : str = 4
+    blink             : str = 5
+    inverse           : str = 7
+    hidden            : str = 8
+    crossed_out       : str = 9
 
-    reset_bold        = 22
-    reset_dim         = 22
-    reset_italic      = 23
-    reset_underline   = 24
-    reset_blink       = 25
-    reset_inverse     = 27
-    reset_hidden      = 28
-    reset_crossed_out = 29
+    reset_bold        : str = 22
+    reset_dim         : str = 22
+    reset_italic      : str = 23
+    reset_underline   : str = 24
+    reset_blink       : str = 25
+    reset_inverse     : str = 27
+    reset_hidden      : str = 28
+    reset_crossed_out : str = 29
 
     # reset all styles include colors/styles
-    reset             = 0
+    reset             : str = 0
 
 
 Colors = AnsiColorsCodes()

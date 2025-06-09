@@ -20,7 +20,7 @@ python -m outlify.panel
 │ You can customize borders, alignment, etc.         │
 │                                                    │
 │ This is just a simple text panel.                  │
-╰────────────────────────────────── Text Panel Demo ─╯
+╰───────────────────────────────────Text Panel Demo──╯
 
 Continued...
 ```
@@ -177,9 +177,9 @@ print(Panel('My text', title='Header title', subtitle='Footer title'))
 <div class="result" markdown>
 
 ```
-╭──────────── Header title ────────────╮
+╭─────────────Header title─────────────╮
 │ My text                              │
-╰──────────── Footer title ────────────╯
+╰─────────────Footer title─────────────╯
 ```
 
 </div>
@@ -197,7 +197,7 @@ print(Panel('My text', title='Header title', title_align='left'))
 <div class="result" markdown>
 
 ```
-╭─ Header title ───────────────────────╮
+╭──Header title────────────────────────╮
 │ My text                              │
 ╰──────────────────────────────────────╯
 ```
@@ -218,7 +218,7 @@ print(Panel('My text', title='Header title', title_align=Align.left))
 <div class="result" markdown>
 
 ```
-╭─ Header title ───────────────────────╮
+╭──Header title────────────────────────╮
 │ My text                              │
 ╰──────────────────────────────────────╯
 ```

@@ -10,7 +10,7 @@ def resolve_width(width: int | None) -> int:
         return width
     if width is not None:
         error = f"Invalid type for width: {width} is not int"
-        raise ValueError(error)
+        raise TypeError(error)
 
     try:
         return shutil.get_terminal_size().columns
@@ -29,9 +29,7 @@ def _parse_class(element: str | Any, cls: Any) -> Any:
 
 
 def parse_styles(codes: Sequence | None) -> str:
-    if codes is None:
-        return ""
-    return "".join(codes)
+    return "".join(codes) if codes is not None else ""
 
 
 def get_reset_by_style(style: str) -> str:

@@ -38,8 +38,8 @@ class PanelBase(ABC):
         self.content = self._get_content(content, width=width, char=border.sides, border_style=border_style)
 
     @abstractmethod
-    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
-        pass
+    def _get_content(self, content: Any, *, width: int, char: str, border_style: str) -> str:
+        pass  # pragma: no cover
 
     @staticmethod
     def _get_inner_width(outside: int) -> int:
@@ -88,7 +88,7 @@ class PanelBase(ABC):
         if title != "":
             width += len(str(title_style)) + len(title_style_reset)   # title styling
             width += len(self.border_reset) + len(str(border_style))  # border styling
-            title = f"{self.border_reset} {title_style}{title}{title_style_reset} {border_style}"
+            title = f"{self.border_reset}{title_style}{title}{title_style_reset}{border_style}"
 
         if align == Align.left:
             title = f"{char}{title}"
@@ -120,7 +120,8 @@ class PanelBase(ABC):
         )
 
     def __repr__(self) -> str:
-        return self.__str__()
+        content = ", ".join(f"{name}={getattr(self, name)!r}" for name in dir(self) if not name.startswith("_"))
+        return f"{self.__class__.__name__}({content})"
 
 
 class Panel(PanelBase):
@@ -146,13 +147,16 @@ class Panel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
-        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
+                               including Colors, Back and Styles
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
-        :param border_style: Aenumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         """
         super().__init__(
             content, width=width,
@@ -161,7 +165,7 @@ class Panel(PanelBase):
             border=border, border_style=border_style,
         )
 
-    def _get_content(self, content: str, *, width: int, char: str, border_style: str) -> str:
+    def _get_content(self, content: Any, *, width: int, char: str, border_style: str) -> str:
         """Get prepared panel content.
 
         :param content: multi-line string to display in the panel
@@ -170,9 +174,7 @@ class Panel(PanelBase):
         :param border_style: ansi escape sequences
         :return: panel with prepared content
         """
-        if not isinstance(content, str):
-            error = f"Invalid type for content: {type(content)} is not str"
-            raise TypeError(error)
+        content = str(content)
         width = self._get_inner_width(width)
 
         lines = []
@@ -216,17 +218,21 @@ class ParamsPanel(PanelBase):
         :param width: total panel width (including borders)
         :param title: title displayed at the top of the panel
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
-        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
-        :param subtitle_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
+                               including Colors, Back and Styles
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
-        :param border_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         :param hidden: Iterable of keys from `content` that should be excluded from display.
                        Useful for filtering out sensitive or irrelevant data
         :param separator: key-value separator
-        :param params_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param params_style: enumeration of parameter name styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
         """
         self.hidden = hidden
         self.separator = separator
@@ -322,14 +328,16 @@ class ParamsPanel(PanelBase):
         return lines
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
+    from outlify.style import Colors
+
     text = (
         "Outlify helps you render beautiful command-line panels.\n"
         "You can customize borders, alignment, etc.\n\n"
         "This is just a simple text panel."
     )
     print(Panel(
-        text, title="Welcome to Outlify", subtitle="Text Panel Demo", title_align="left", subtitle_align="right",
+        text, title=" Welcome to Outlify ", subtitle="Text Panel Demo", title_align="left", subtitle_align="right",
     ), "", sep="\n")
 
     long_text = (
@@ -343,7 +351,8 @@ if __name__ == "__main__":
         "Outlify helps you do it with style."
     )
     print(Panel(
-        long_text, title="Long Text Panel Example", subtitle="using another border style", border="╔╗╚╝═║",
+        long_text, title="[ Long Text Panel Example ]", subtitle="using another border and border style",
+        border="╔╗╚╝═║", border_style=[Colors.gray],
     ), "", sep="\n")
 
     text = (

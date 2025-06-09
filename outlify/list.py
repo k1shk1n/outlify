@@ -24,7 +24,7 @@ class ListBase(ABC):
 
     @abstractmethod
     def _get_content(self, content: list[Any], *, width: int) -> str:
-        pass
+        pass  # pragma: no cover
 
     @staticmethod
     def _get_title(title: str, *, count: int, style: str, reset: str) -> str:
@@ -40,7 +40,8 @@ class ListBase(ABC):
         return self.title_separator.join((self.title, self.content))
 
     def __repr__(self) -> str:
-        return self.__str__()
+        content = ", ".join(f"{name}={getattr(self, name)!r}" for name in dir(self) if not name.startswith("_"))
+        return f"{self.__class__.__name__}({content})"
 
 
 class TitledList(ListBase):
@@ -56,7 +57,8 @@ class TitledList(ListBase):
 
         :param content: element enumeration
         :param title: title displayed before elements
-        :param title_style: enumeration of styles. Any class inherited from AnsiCodes, including Colors and Styles
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
         :param separator: separator between title and elements
         """
         self.separator = separator
@@ -66,9 +68,11 @@ class TitledList(ListBase):
         return self.separator.join(content)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     print(
         "Outlify helps you create list output in a beautiful format\n",
         "The first one is the simplest: a titled list", sep="\n",
     )
-    print(TitledList(["ruff@1.0.0", "pytest@1.2.3", "mkdocs@3.2.1", "mike@0.0.1"], title="Packages"))
+    print(TitledList([
+        "ruff@1.0.0", "pytest@1.2.3", "mkdocs@3.2.1", "mike@0.0.1",
+    ], title="Packages"))
