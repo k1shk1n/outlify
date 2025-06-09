@@ -112,6 +112,25 @@ print(f'{Colors.red}{Styles.bold}text')
 For more details on how to use Style, see [Style](https://k1shk1n.github.io/outlify/latest/components/style/)
 
 </details>
+<details>
+<summary>Decorators</summary>
+
+You can also use **Outlify's** utility **Decorators**
+
+```python
+import time
+from outlify.decorators import timer
+
+@timer()
+def dummy():
+    time.sleep(1)
+
+dummy()
+```
+
+For more details on how to use Style, see [Decorators](https://k1shk1n.github.io/outlify/latest/components/decorators/)
+
+</details>
 
 ## License
 Licensed under the [MIT License, Copyright (c) 2025 Vladislav Kishkin](LICENSE)
