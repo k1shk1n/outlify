@@ -1,3 +1,4 @@
+import re
 from typing import Union, Optional, Any, Sequence
 
 import pytest
@@ -229,17 +230,17 @@ def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'params,title,title_align,subtitle,subtitle_align,border,result',
+    'params,title,title_align,subtitle,subtitle_align,border,hidden,result',
     [
         (
-            {'x': 10, 'y': 20}, '', 'center', '', 'center', '╭╮╰╯─│',
+            {'x': 10, 'y': 20}, '', 'center', '', 'center', '╭╮╰╯─│', None,
             '╭──────────────────╮\n'
             '│ x = 10           │\n'
             '│ y = 20           │\n'
             '╰──────────────────╯'
         ),
         (
-            {'x': 10000000000000}, '', 'center', '', 'center', '╭╮╰╯─│',
+            {'x': 10000000000000}, '', 'center', '', 'center', '╭╮╰╯─│', None,
             '╭──────────────────╮\n'
             '│ x = 100000000000 │\n'
             '│     00           │\n'
@@ -247,80 +248,135 @@ def test_panel(text: str, title: str, title_align: str, subtitle: str, subtitle_
         ),
 
         (
-            {'x': 10}, 'title1', 'left', 'title2', 'left', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'left', 'title2', 'left', '╭╮╰╯─│', None,
             '╭─title1───────────╮\n'
             '│ x = 10           │\n'
             '╰─title2───────────╯'
         ),
         (
-            {'x': 10}, 'title1', 'center', 'title2', 'center', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'center', 'title2', 'center', '╭╮╰╯─│', None,
             '╭──────title1──────╮\n'
             '│ x = 10           │\n'
             '╰──────title2──────╯'
         ),
         (
-            {'x': 10}, 'title1', 'right', 'title2', 'right', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'right', 'title2', 'right', '╭╮╰╯─│', None,
             '╭───────────title1─╮\n'
             '│ x = 10           │\n'
             '╰───────────title2─╯'
         ),
 
         (
-            {'x': 10}, 'title1', 'left', 'title2', 'center', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'left', 'title2', 'center', '╭╮╰╯─│', None,
             '╭─title1───────────╮\n'
             '│ x = 10           │\n'
             '╰──────title2──────╯'
         ),
         (
-            {'x': 10}, 'title1', 'left', 'title2', 'right', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'left', 'title2', 'right', '╭╮╰╯─│', None,
             '╭─title1───────────╮\n'
             '│ x = 10           │\n'
             '╰───────────title2─╯'
         ),
 
         (
-            {'x': 10}, 'title1', 'center', 'title2', 'left', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'center', 'title2', 'left', '╭╮╰╯─│', None,
             '╭──────title1──────╮\n'
             '│ x = 10           │\n'
             '╰─title2───────────╯'
         ),
         (
-            {'x': 10}, 'title1', 'center', 'title2', 'right', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'center', 'title2', 'right', '╭╮╰╯─│', None,
             '╭──────title1──────╮\n'
             '│ x = 10           │\n'
             '╰───────────title2─╯'
         ),
 
         (
-            {'x': 10}, 'title1', 'right', 'title2', 'left', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'right', 'title2', 'left', '╭╮╰╯─│', None,
             '╭───────────title1─╮\n'
             '│ x = 10           │\n'
             '╰─title2───────────╯'
         ),
         (
-            {'x': 10}, 'title1', 'right', 'title2', 'center', '╭╮╰╯─│',
+            {'x': 10}, 'title1', 'right', 'title2', 'center', '╭╮╰╯─│', None,
             '╭───────────title1─╮\n'
             '│ x = 10           │\n'
             '╰──────title2──────╯'
         ),
 
         (
-            {'x': 10}, '', 'center', '', 'center', '╭╮╰╯─',
+            {'x': 10}, '', 'center', '', 'center', '╭╮╰╯─', None,
             '╭──────────────────╮\n'
             '  x = 10\n'
+            '╰──────────────────╯'
+        ),
+
+        ## Test hiding parameters
+        # default hidden
+        (
+            {'password': 10}, '', 'center', '', 'center', '╭╮╰╯─', None,
+            '╭──────────────────╮\n'
+            '  password = *****\n'
+            '╰──────────────────╯'
+        ),
+        (
+            {'password': 10, 'x': 20}, '', 'center', '', 'center', '╭╮╰╯─', None,
+            '╭──────────────────╮\n'
+            '  password = *****\n'
+            '  x        = 20\n'
+            '╰──────────────────╯'
+        ),
+        # set empty hidden
+        (
+            {'password': 10, 'x': 20}, '', 'center', '', 'center', '╭╮╰╯─', [],
+            '╭──────────────────╮\n'
+            '  password = 10\n'
+            '  x        = 20\n'
+            '╰──────────────────╯'
+        ),
+        # set other patterns
+        (
+            {'password': 10, 'x': 20}, '', 'center', '', 'center', '╭╮╰╯─', ['.*x.*'],
+            '╭──────────────────╮\n'
+            '  password = 10\n'
+            '  x        = *****\n'
+            '╰──────────────────╯'
+        ),
+        # set additionally patterns
+        (
+            {'password': 10, 'x': 20}, '', 'center', '', 'center', '╭╮╰╯─', ['.*password.*', '.*x.*'],
+            '╭──────────────────╮\n'
+            '  password = *****\n'
+            '  x        = *****\n'
+            '╰──────────────────╯'
+        ),
+        # set different pattern types: string, regex string, regex pattern
+        (
+            {'word': 10, 'another': 20, 'one-more': 30}, '', 'center', '', 'center', '╭╮╰╯─',
+            ['word', '.*other', re.compile('(one|two)?-more.*')],
+            '╭──────────────────╮\n'
+            '  word     = *****\n'
+            '  another  = *****\n'
+            '  one-more = *****\n'
             '╰──────────────────╯'
         ),
     ]
 )
 def test_params_panel(
         params: dict[Any, Any], title: str, title_align: str, subtitle: str, subtitle_align: str,
-        border, result: str
+        border, hidden: list[str],
+        result: str
 ):
+    additionally = {}
+    if hidden is not None:
+        additionally['hidden'] = hidden
     panel = ParamsPanel(
         params, width=20, title=title, subtitle=subtitle,
         title_align=title_align, title_style='',
         subtitle_align=subtitle_align, subtitle_style='',
-        border=border, border_style='', params_style=''
+        border=border, border_style='', params_style='',
+        **additionally
     )
     assert str(panel) == result
 
@@ -350,7 +406,8 @@ def test_params_panel_invalid_content(content):
         (
             ParamsPanel({'x': 10}, width=10),
             "ParamsPanel(border_reset='', content='│ x = 10 │', footer='╰────────╯', header='╭────────╮', "
-            "hidden=(), params_reset='', params_style='', separator=' = ')",
+            "hidden=(re.compile('.*password.*'), re.compile('.*token.*')), params_reset='', params_style='', "
+            "separator=' = ')",
         ),
     ]
 )
