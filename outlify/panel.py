@@ -1,3 +1,4 @@
+import re
 import textwrap
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Mapping, Sequence
@@ -204,7 +205,7 @@ class ParamsPanel(PanelBase):
             subtitle_style: Sequence[AnsiCodes | str] | None = None,
             border: str | BorderStyle = "╭╮╰╯─│",
             border_style: Sequence[AnsiCodes | str] | None = None,
-            hidden: Iterable[str] = (), separator: str = " = ",
+            hidden: Iterable[str | re.Pattern] = (".*password.*", ".*token.*"), separator: str = " = ",
             params_style: Sequence[AnsiCodes | str] | None = None,
     ) -> None:
         """Create a panel for displaying key-value parameters in a formatted layout.
@@ -228,13 +229,13 @@ class ParamsPanel(PanelBase):
                        or an instance of BorderStyle
         :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
                              including Colors, Back and Styles
-        :param hidden: Iterable of keys from `content` that should be excluded from display.
+        :param hidden: Iterable of regexes for keys from `content` that should be excluded from display.
                        Useful for filtering out sensitive or irrelevant data
         :param separator: key-value separator
         :param params_style: enumeration of parameter name styles. Any class inherited from AnsiCodes,
                              including Colors, Back and Styles
         """
-        self.hidden = hidden
+        self.hidden = self._compile_regexes(hidden)
         self.separator = separator
         self.params_style = parse_styles(params_style)
         self.params_reset = get_reset_by_style(self.params_style)
@@ -247,6 +248,10 @@ class ParamsPanel(PanelBase):
             subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
             border=border, border_style=border_style,
         )
+
+    @staticmethod
+    def _compile_regexes(hidden: Iterable[str | re.Pattern[str]]) -> tuple[re.Pattern[str], ...]:
+        return tuple(re.compile(pattern) if isinstance(pattern, str) else pattern for pattern in hidden)
 
     def _get_content(self, content: Mapping[Any, Any], *, width: int, char: str, border_style: str) -> str:
         """Get prepared panel content.
@@ -299,7 +304,10 @@ class ParamsPanel(PanelBase):
         :param value: parameter value
         :return: either the original value or a masked string
         """
-        return "*****" if key in self.hidden and value else value
+        for pattern in self.hidden:
+            if pattern.fullmatch(key):
+                return "*****" if value else value
+        return value
 
     def _wrap_line(
             self, line: str, width: int, leveled_width: int, width_inside: int,
@@ -368,4 +376,4 @@ if __name__ == "__main__":  # pragma: no cover
         "password": "fake-password",
         "description": "This is a fake description to show you how Outlify can wrap text in the Parameters Panel",
     }
-    print(ParamsPanel(parameters, title="Start Parameters", hidden=("password",)))
+    print(ParamsPanel(parameters, title="Start Parameters"))
