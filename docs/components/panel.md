@@ -62,7 +62,7 @@ parameters = {
     'parameter2': 'value2', 
     'token': 'fake-token'
 }
-print(ParamsPanel(parameters, hidden=('token', )))
+print(ParamsPanel(parameters))
 ```
 
 <div class="result" markdown>
@@ -76,11 +76,20 @@ print(ParamsPanel(parameters, hidden=('token', )))
 ```
 </div>
 
+Keys to hide can be passed as regex: 
+
+1. a string to be compiled into regex
+2. an already precompiled regex. The default is patterns: `.*password.*`, `.*token.*`
+
+!!! tip
+
+    If you don't want to mask anything, pass an empty list.
+
 !!! note
 
-    `hidden` works in such a way that if a value is passed into it 
-    and it needs to be masked, it will print `*****` instead of the value, 
-    otherwise it will empty the value.
+    `hidden` works in such a way that if a value is passed to it
+    and it needs to be masked, it will output `*****` instead of the value,
+    if it is empty, it will output the result of the masking too.
 
 ### `separator`
 The default is ` = ` between the key and the value, but this can be overridden using `separator` argument to,
