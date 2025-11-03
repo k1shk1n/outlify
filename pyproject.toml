@@ -61,7 +61,7 @@ docs = [
 line-length = 120
 indent-width = 4
 target-version = "py310"
-output-format = "github"
+# output-format = "github"
 exclude = ['tests']
 
 [tool.ruff.lint]

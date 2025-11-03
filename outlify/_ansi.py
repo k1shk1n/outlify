@@ -16,6 +16,7 @@ SGR = "m"      # Select Graphic Rendition suffix
 
 
 def code_to_ansi(*codes: int) -> str:
+    x = 10
     return f"{CSI}{';'.join(map(str, codes))}{SGR}"
 
 
