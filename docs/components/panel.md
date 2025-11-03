@@ -234,6 +234,27 @@ print(Panel('My text', title='Header title', title_align=Align.left))
 
 </div>
 
+### `title_conns` / `subtitle_conns`
+You can add connectors to your title / subtitle
+
+```python
+from outlify.panel import Panel
+
+print(Panel('My text', title='Title', title_conns='<<>>'))
+```
+
+<div class="result" markdown>
+
+```
+╭──────────────<<Title>>───────────────╮
+│ My text                              │
+╰──────────────────────────────────────╯
+```
+
+</div>
+
+Works the same way for `subtitle`.
+
 ### `border`
 You can replace the default borders using `border` like this:
 
