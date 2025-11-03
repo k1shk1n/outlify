@@ -14,8 +14,10 @@ __all__ = ["Panel", "ParamsPanel"]
 class PanelBase(ABC):
     def __init__(
             self, content: Any, *, width: int | None,
-            title: str, title_align: str | Align, title_style: Sequence[AnsiCodes | str] | None,
-            subtitle: str, subtitle_align: str | Align, subtitle_style: Sequence[AnsiCodes | str] | None,
+            title: str, subtitle: str,
+            title_align: str | Align, subtitle_align: str | Align,
+            title_style: Sequence[AnsiCodes | str] | None, subtitle_style: Sequence[AnsiCodes | str] | None,
+            title_conns: str, subtitle_conns: str,
             border: str | BorderStyle,
             border_style: Sequence[AnsiCodes] | None,
     ) -> None:
@@ -29,12 +31,13 @@ class PanelBase(ABC):
         self.border_reset = get_reset_by_style(border_style)
         self.header = self._get_header(
             title, align=parse_title_align(title_align), title_style=title_style, title_style_reset=title_reset,
-            width=width, left=border.lt, char=border.headers, right=border.rt, border_style=border_style,
+            width=width, left=border.lt, char=border.headers, right=border.rt, conns=title_conns,
+            border_style=border_style,
         )
         self.footer = self._get_header(
             subtitle, align=parse_title_align(subtitle_align), title_style=subtitle_style,
             title_style_reset=subtitle_reset, width=width, left=border.lb, char=border.headers,
-            right=border.rb, border_style=border_style,
+            right=border.rb, conns=subtitle_conns, border_style=border_style,
         )
         self.content = self._get_content(content, width=width, char=border.sides, border_style=border_style)
 
@@ -74,30 +77,44 @@ class PanelBase(ABC):
 
     def _get_header(
             self, title: str, *, width: int, align: Align, title_style: str, title_style_reset: str,
-            left: str, char: str, right: str, border_style: str,
+            left: str, char: str, right: str, conns: str, border_style: str,
     ) -> str:
         header = self._fill_header(
             title, width=width - 2, align=align, title_style=title_style, title_style_reset=title_style_reset,
-            char=char, border_style=border_style,
+            char=char, conns=conns, border_style=border_style,
         )
         return f"{border_style}{left}{header}{right}{self.border_reset}"
 
     def _fill_header(
             self, title: str, *, width: int, align: Align, title_style: str, title_style_reset: str,
-            char: str, border_style: str,
+            char: str, conns: str, border_style: str,
     ) -> str:
         if title != "":
             width += len(str(title_style)) + len(title_style_reset)   # title styling
             width += len(self.border_reset) + len(str(border_style))  # border styling
             title = f"{self.border_reset}{title_style}{title}{title_style_reset}{border_style}"
 
+        lconn, rconn = self._get_connectors(conns)
+        title = f"{lconn}{title}{rconn}"
+
         if align == Align.left:
             title = f"{char}{title}"
             return f"{title.ljust(width, char)}"
-        if align == Align.center:
-            return title.center(width, char)
-        title = f"{title}{char}"
-        return title.rjust(width, char)
+        if align == Align.right:
+            title = f"{title}{char}"
+            return title.rjust(width, char)
+        return title.center(width, char)
+
+    def _get_connectors(self, conns: str) -> tuple[str, str]:
+        if not isinstance(conns, str):
+            err = f"Expected 'conns' to be str, got {type(conns).__name__}"
+            raise TypeError(err)
+        if len(conns) % 2 != 0:
+            err = f"Connectors pattern '{conns}' must have an even number of characters to parse it"
+            raise ValueError(err)
+
+        mid = len(conns) // 2
+        return conns[:mid], conns[mid:]
 
     def _fill(self, line: str, *, width: int, char: str, border_style: str, indent: str = "") -> str:
         """Fill a single line.
@@ -130,10 +147,11 @@ class Panel(PanelBase):
 
     def __init__(
             self, content: str, *, width: int | None = None,
-            title: str = "", title_align: str | Align = "center",
+            title: str = "", subtitle: str = "",
+            title_align: str | Align = "center", subtitle_align: str | Align = "center",
             title_style: Sequence[AnsiCodes | str] | None = None,
-            subtitle: str = "", subtitle_align: str | Align = "center",
             subtitle_style: Sequence[AnsiCodes | str] | None = None,
+            title_conns: str = "", subtitle_conns: str = "",
             border: str | BorderStyle = "╭╮╰╯─│",
             border_style: Sequence[AnsiCodes | str] | None = None,
     ) -> None:
@@ -150,10 +168,23 @@ class Panel(PanelBase):
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_conns: a connector pattern used to surround the title text.
+            The string must have an **even number of characters**, as it will be split in half -
+            the left half will appear **before** the title, and the right half **after** it.
+
+            For example:
+            - `'[]'` → produces `[Title]`
+            - `'-{}-'` → produces `-{Title}-`
+            - `'<<>>'` → produces `<<Title>>`
+
+            If empty, the title is displayed without any additional connectors.
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
         :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
                                including Colors, Back and Styles
+        :param subtitle_conns:
+            same as `title_conns`, but applied to the subtitle text instead.
+            Allows creating consistent visual framing for the subtitle.
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
         :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
@@ -161,8 +192,10 @@ class Panel(PanelBase):
         """
         super().__init__(
             content, width=width,
-            title=title, title_align=title_align, title_style=title_style,
-            subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
+            title=title, subtitle=subtitle,
+            title_align=title_align, subtitle_align=subtitle_align,
+            title_style=title_style, subtitle_style=subtitle_style,
+            title_conns=title_conns, subtitle_conns=subtitle_conns,
             border=border, border_style=border_style,
         )
 
@@ -199,10 +232,11 @@ class ParamsPanel(PanelBase):
 
     def __init__(
             self, content: Mapping[Any, Any], *, width: int | None = None,
-            title: str = "", title_align: str | Align = "center",
+            title: str = "", subtitle: str = "",
+            title_align: str | Align = "center", subtitle_align: str | Align = "center",
             title_style: Sequence[AnsiCodes | str] | None = None,
-            subtitle: str = "", subtitle_align: str | Align = "center",
             subtitle_style: Sequence[AnsiCodes | str] | None = None,
+            title_conns: str = "", subtitle_conns: str = "",
             border: str | BorderStyle = "╭╮╰╯─│",
             border_style: Sequence[AnsiCodes | str] | None = None,
             hidden: Iterable[str | re.Pattern] = (".*password.*", ".*token.*"), separator: str = " = ",
@@ -221,10 +255,23 @@ class ParamsPanel(PanelBase):
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_conns: a connector pattern used to surround the title text.
+            The string must have an **even number of characters**, as it will be split in half -
+            the left half will appear **before** the title, and the right half **after** it.
+
+            For example:
+            - `'[]'` → produces `[Title]`
+            - `'-{}-'` → produces `-{Title}-`
+            - `'<<>>'` → produces `<<Title>>`
+
+            If empty, the title is displayed without any additional connectors.
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
         :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
                                including Colors, Back and Styles
+        :param subtitle_conns:
+            same as `title_conns`, but applied to the subtitle text instead.
+            Allows creating consistent visual framing for the subtitle.
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
         :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
@@ -244,8 +291,10 @@ class ParamsPanel(PanelBase):
         self._additional_width = len(self.params_style) + len(self.params_reset)
         super().__init__(
             content, width=width,
-            title=title, title_align=title_align, title_style=title_style,
-            subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
+            title=title, subtitle=subtitle,
+            title_align=title_align, subtitle_align=subtitle_align,
+            title_style=title_style, subtitle_style=subtitle_style,
+            title_conns=title_conns, subtitle_conns=subtitle_conns,
             border=border, border_style=border_style,
         )
 
@@ -359,8 +408,8 @@ if __name__ == "__main__":  # pragma: no cover
         "Outlify helps you do it with style."
     )
     print(Panel(
-        long_text, title="[ Long Text Panel Example ]", subtitle="using another border and border style",
-        border="╔╗╚╝═║", border_style=[Colors.gray],
+        long_text, title=" Long Text Panel Example ", subtitle="using another border and border style",
+        border="╔╗╚╝═║", border_style=[Colors.gray], title_conns="[]",
     ), "", sep="\n")
 
     text = (

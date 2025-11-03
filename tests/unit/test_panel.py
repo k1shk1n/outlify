@@ -14,6 +14,7 @@ class ReleasedPanelBase(PanelBase):
             title_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
             subtitle: str = '', subtitle_align: Union[str, Align] = 'center',
             subtitle_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
+            title_conns: str = "", subtitle_conns: str = "",
             border: Union[str | BorderStyle] = '╭╮╰╯─│',
             border_style: Optional[Sequence[Union[AnsiCodes, str]]] = None,
     ):
@@ -21,6 +22,7 @@ class ReleasedPanelBase(PanelBase):
             content, width=width,
             title=title, title_align=title_align, title_style=title_style,
             subtitle=subtitle, subtitle_align=subtitle_align, subtitle_style=subtitle_style,
+            title_conns=title_conns, subtitle_conns=subtitle_conns,
             border=border, border_style=border_style
         )
 
@@ -78,17 +80,40 @@ def test_parse_border_style(
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'title,align,char,result',
+    'title,align,char,conns,result',
     [
-        ('TITLE', Align.left, '-', '-TITLE----'),
-        ('TITLE', Align.center, '-', '--TITLE---'),
-        ('TITLE', Align.right, '-', '----TITLE-'),
+        ('TITLE', Align.left, '-', '', '-TITLE--------'),
+        ('TITLE', Align.right, '-', '[]', '------[TITLE]-'),
+        ('TITLE', Align.center, '-', '>-{}-<', '->-{TITLE}-<--'),
     ]
 )
-def test_fill_header(title: str, align: Align, char: str, result: str):
+def test_get_connectors(title: str, align: Align, char: str, conns: str, result: str):
+    print('nned', result)
     assert ReleasedPanelBase()._fill_header(
-        title, align=align, width=10, char=char, title_style='', title_style_reset='', border_style=''
+        title, align=align, width=14, char=char, title_style='', title_style_reset='', border_style='', 
+        conns=conns,
     ) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'conns,error,result',
+    [
+        ('', None, ('', '')),
+        ('[]', None, ('[', ']')),
+        ('>-{}-<', None, ('>-{', '}-<')),
+        (None, TypeError, None),
+        ((), TypeError, None),
+        ('[', ValueError, None),
+    ]
+)
+def test_fill_header(conns: str, error, result: str):
+    if error is None:
+        assert ReleasedPanelBase()._get_connectors(conns) == result
+        return
+    
+    with pytest.raises(error):
+        ReleasedPanelBase()._get_connectors(conns)
 
 
 @pytest.mark.unit
@@ -106,7 +131,7 @@ def test_get_header(title: str, align: Align, left: str, char: str, right: str, 
     base = ReleasedPanelBase()
     assert base._get_header(
         title, align=align, title_style='', title_style_reset='', width=12,
-        left=left, char=char, right=right, border_style=''
+        left=left, char=char, right=right, border_style='', conns=''
     ) == result
 
 
