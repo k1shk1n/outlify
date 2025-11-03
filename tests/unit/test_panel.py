@@ -80,16 +80,18 @@ def test_parse_border_style(
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    'title,align,char,result',
+    'title,align,char,conns,result',
     [
-        ('TITLE', Align.left, '-', '-TITLE----'),
-        ('TITLE', Align.center, '-', '--TITLE---'),
-        ('TITLE', Align.right, '-', '----TITLE-'),
+        ('TITLE', Align.left, '-', '', '-TITLE--------'),
+        ('TITLE', Align.right, '-', '[]', '------[TITLE]-'),
+        ('TITLE', Align.center, '-', '>-{}-<', '->-{TITLE}-<--'),
     ]
 )
-def test_fill_header(title: str, align: Align, char: str, result: str):
+def test_fill_header(title: str, align: Align, char: str, conns: str, result: str):
+    print('nned', result)
     assert ReleasedPanelBase()._fill_header(
-        title, align=align, width=10, char=char, title_style='', title_style_reset='', border_style='', conns='',
+        title, align=align, width=14, char=char, title_style='', title_style_reset='', border_style='', 
+        conns=conns,
     ) == result
 
 
