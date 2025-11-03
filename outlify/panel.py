@@ -168,10 +168,23 @@ class Panel(PanelBase):
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_conns: a connector pattern used to surround the title text.
+            The string must have an **even number of characters**, as it will be split in half -
+            the left half will appear **before** the title, and the right half **after** it.
+
+            For example:
+            - `'[]'` → produces `[Title]`
+            - `'-{}-'` → produces `-{Title}-`
+            - `'<<>>'` → produces `<<Title>>`
+
+            If empty, the title is displayed without any additional connectors.
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
         :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
                                including Colors, Back and Styles
+        :param subtitle_conns:
+            same as `title_conns`, but applied to the subtitle text instead.
+            Allows creating consistent visual framing for the subtitle.
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
         :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
@@ -242,10 +255,23 @@ class ParamsPanel(PanelBase):
         :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum/type
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_conns: a connector pattern used to surround the title text.
+            The string must have an **even number of characters**, as it will be split in half -
+            the left half will appear **before** the title, and the right half **after** it.
+
+            For example:
+            - `'[]'` → produces `[Title]`
+            - `'-{}-'` → produces `-{Title}-`
+            - `'<<>>'` → produces `<<Title>>`
+
+            If empty, the title is displayed without any additional connectors.
         :param subtitle: subtitle displayed below the title
         :param subtitle_align: alignment of the subtitle. Same format as title_align
         :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
                                including Colors, Back and Styles
+        :param subtitle_conns:
+            same as `title_conns`, but applied to the subtitle text instead.
+            Allows creating consistent visual framing for the subtitle.
         :param border: Border character style. Can be a string representing custom border characters
                        or an instance of BorderStyle
         :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
