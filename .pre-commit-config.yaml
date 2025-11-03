@@ -3,3 +3,10 @@ repos:
     rev: v0.14.3
     hooks:
       - id: ruff-check
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Run pytest
+        entry: pytest
+        language: system
+        types: [python]
