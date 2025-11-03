@@ -87,12 +87,33 @@ def test_parse_border_style(
         ('TITLE', Align.center, '-', '>-{}-<', '->-{TITLE}-<--'),
     ]
 )
-def test_fill_header(title: str, align: Align, char: str, conns: str, result: str):
+def test_get_connectors(title: str, align: Align, char: str, conns: str, result: str):
     print('nned', result)
     assert ReleasedPanelBase()._fill_header(
         title, align=align, width=14, char=char, title_style='', title_style_reset='', border_style='', 
         conns=conns,
     ) == result
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    'conns,error,result',
+    [
+        ('', None, ('', '')),
+        ('[]', None, ('[', ']')),
+        ('>-{}-<', None, ('>-{', '}-<')),
+        (None, TypeError, None),
+        ((), TypeError, None),
+        ('[', ValueError, None),
+    ]
+)
+def test_fill_header(conns: str, error, result: str):
+    if error is None:
+        assert ReleasedPanelBase()._get_connectors(conns) == result
+        return
+    
+    with pytest.raises(error):
+        ReleasedPanelBase()._get_connectors(conns)
 
 
 @pytest.mark.unit

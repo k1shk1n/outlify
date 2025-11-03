@@ -108,7 +108,7 @@ class PanelBase(ABC):
     def _get_connectors(self, conns: str) -> tuple[str, str]:
         if not isinstance(conns, str):
             err = f"Expected 'conns' to be str, got {type(conns).__name__}"
-            return TypeError(err)
+            raise TypeError(err)
         if len(conns) % 2 != 0:
             err = f"Connectors pattern '{conns}' must have an even number of characters to parse it"
             raise ValueError(err)
