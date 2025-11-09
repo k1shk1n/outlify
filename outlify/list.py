@@ -61,6 +61,7 @@ class TitledList(ListBase):
         :param title: title displayed before elements
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_separator: separator between title and first item in list (content)
         :param separator: separator between title and elements
         """
         self.separator = separator
