@@ -48,7 +48,9 @@ class TitledList(ListBase):
     """Titled list with length."""
 
     def __init__(
-            self, content: Sequence[Any], *, title: str = "Content", title_style: Sequence[AnsiCodes] | None = None,
+            self, content: Sequence[Any], *,
+            title: str = "Content", title_style: Sequence[AnsiCodes] | None = None,
+            title_separator: str = ": ",
             separator: str = "  ",
     ) -> None:
         """Create a simple list for displaying elements with customizable title.
@@ -59,16 +61,22 @@ class TitledList(ListBase):
         :param title: title displayed before elements
         :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
                             including Colors, Back and Styles
+        :param title_separator: separator between title and first item in list (content)
         :param separator: separator between title and elements
         """
         self.separator = separator
-        super().__init__(content, width=None, title=title, title_separator=": ", title_style=title_style)
+        super().__init__(
+            content, width=None, title=title,
+            title_separator=title_separator,
+            title_style=title_style,
+        )
 
     def _get_content(self, content: list[str], *, width: int) -> str:  # noqa: ARG002
         return self.separator.join(content)
 
 
 if __name__ == "__main__":  # pragma: no cover
+    from outlify.style import Styles
     print(
         "Outlify helps you create list output in a beautiful format\n",
         "The first one is the simplest: a titled list", sep="\n",
@@ -76,3 +84,9 @@ if __name__ == "__main__":  # pragma: no cover
     print(TitledList([
         "ruff@1.0.0", "pytest@1.2.3", "mkdocs@3.2.1", "mike@0.0.1",
     ], title="Packages"))
+
+    print("\nor you can output the elements line by line")
+    print(TitledList(
+        ["first", "second", "third", "fourth", "fifth"], title="Elements",
+        title_style=[Styles.bold], title_separator=":\n- ", separator="\n- ",
+    ))

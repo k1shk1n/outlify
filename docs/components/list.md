@@ -62,6 +62,27 @@ Packages (2): first-package-1.0.0  second-package-1.2.3
 
 </div>
 
+### `title_separator`
+Sets the string separating the title from the list content.
+Default is `": "`. Useful for placing items on a new line or changing title formatting.
+
+```python
+from outlify.list import TitledList
+
+fruits = ['apple', 'banana', 'orange']
+print(TitledList(fruits, title_separator=':\n'))
+```
+
+<div class="result" markdown>
+
+```
+Content (3):
+apple  banana  orange
+```
+
+</div>
+
+
 ### `separator`
 Change how items are separated in the output. Default is two spaces.
 
@@ -97,3 +118,25 @@ print(TitledList(elements, title_style=[Colors.red, Styles.bold]))
 ```
 
 For details on styling, see [Styles](style.md).
+
+### Combining `title_separator` and `separator`
+You can combine `title_separator` and `separator` to fully control the layout.
+For example, to print each item on a new line with a dash:
+
+```
+from outlify.list import TitledList
+
+fruits = ['apple', 'banana', 'orange']
+print(TitledList(fruits, title_separator=':\n- ', separator='\n- '))
+```
+
+<div class="result" markdown>
+
+```
+Content (3):
+- apple
+- banana
+- orange
+```
+
+</div>
