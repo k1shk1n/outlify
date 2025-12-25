@@ -87,6 +87,28 @@ dummy()
 
 For details on styling, see [Styles](style.md).
 
+### `connector`
+Word or phrase used to connect the label and the measured duration in the output message (e.g. "took", "in", "completed in")
+
+```python
+import time
+from outlify.decorators import timer
+
+@timer(connector='in')
+def dummy():
+    time.sleep(1)
+
+dummy()
+```
+
+<div class="result" markdown>
+
+```
+Function 'dummy' in 00:00:01.000
+```
+
+</div>
+
 ### `time_format`
 Specifies the format string used to display the function's execution duration.
 

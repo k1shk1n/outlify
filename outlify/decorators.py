@@ -15,6 +15,7 @@ R = TypeVar("R")
 def timer(
         label: str | None = None,
         label_style: Sequence[AnsiCodes] | None = None,
+        connector: str = "took",
         time_format: str = "{h:02}:{m:02}:{s:02}.{ms:03}",
         time_style: Sequence[AnsiCodes] | None = None,
         output_func: Callable[[str], None] = print,
@@ -24,6 +25,8 @@ def timer(
     :param label: optional custom label; if not provided, defaults to "Function {function name}"
     :param label_style: enumeration of label styles. Any class inherited from AnsiCodes,
                         including Colors, Back and Styles
+    :param connector: word or phrase used to connect the label and the measured duration
+                      in the output message (e.g. "took", "in", "completed in").
     :param time_format: a string format specifying how the duration will be displayed.
         The following placeholders are supported:
             {h} - hours,
@@ -54,7 +57,10 @@ def timer(
                 )
                 raise KeyError(error) from None
 
-            message = _get_message(duration, time_style, label, label_style, funcname=repr(func.__name__))
+            message = _get_message(
+                duration, time_style, connector,
+                label, label_style, funcname=repr(func.__name__),
+            )
             output_func(message)
             return result
         return wrapper
@@ -72,13 +78,13 @@ def _format_duration(seconds: float, *, fmt: str) -> str:
 
 
 def _get_message(
-        duration: str, time_style: Sequence[AnsiCodes] | None,
+        duration: str, time_style: Sequence[AnsiCodes] | None, connector: str,
         label: str | None, label_style: Sequence[AnsiCodes] | None, funcname: str,
 ) -> str:
     label = label if label else f"Function {funcname}"
     label = _styling_text(label, style=label_style)
     duration = _styling_text(duration, style=time_style)
-    return f"{label} took {duration}"
+    return f"{label} {connector} {duration}"
 
 
 def _styling_text(text: str, style: Sequence[AnsiCodes] | None) -> str:
@@ -140,6 +146,20 @@ if __name__ == "__main__":  # pragma: no cover
 
     print("""
     @timer(label_style=[Colors.red], time_style=[Colors.crimson, Styles.underline])
+    def colored_timer(a: int, b: int) -> int:
+        return a + b
+    """)
+
+    with patch("outlify.decorators.time.perf_counter", side_effect=[0, 3723.456]):
+        colored_timer(1, 2)
+
+
+    @timer("Download completed", connector="in")
+    def colored_timer(a: int, b: int) -> int:
+        return a + b
+
+    print("""
+    @timer("Download completed", connector="in")
     def colored_timer(a: int, b: int) -> int:
         return a + b
     """)
