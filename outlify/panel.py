@@ -8,10 +8,12 @@ from outlify._ansi import AnsiCodes
 from outlify._utils import get_reset_by_style, parse_styles, parse_title_align, resolve_width
 from outlify.style import Align, BorderStyle
 
-__all__ = ["Panel", "ParamsPanel"]
+__all__ = ["Panel", "PanelBase", "ParamsPanel"]
 
 
 class PanelBase(ABC):
+    """Base class for creating formatted panels with borders and headers."""
+
     def __init__(
             self, content: Any, *, width: int | None,
             title: str, subtitle: str,
@@ -21,6 +23,24 @@ class PanelBase(ABC):
             border: str | BorderStyle,
             border_style: Sequence[AnsiCodes] | None,
     ) -> None:
+        """Create a base panel with customizable borders, title, and subtitle.
+
+        :param content: content to be displayed inside the panel
+        :param width: total panel width (including borders)
+        :param title: title displayed at the top of the panel
+        :param subtitle: subtitle displayed at the bottom of the panel
+        :param title_align: alignment of the title. Can be a string ('left', 'center', 'right') or an Align enum
+        :param subtitle_align: alignment of the subtitle. Same format as title_align
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
+        :param subtitle_style: enumeration of subtitle styles. Any class inherited from AnsiCodes,
+                               including Colors, Back and Styles
+        :param title_conns: connector pattern for title (even number of chars, split in half around title)
+        :param subtitle_conns: connector pattern for subtitle (even number of chars, split in half around subtitle)
+        :param border: border character style. Can be a string or BorderStyle instance
+        :param border_style: enumeration of border styles. Any class inherited from AnsiCodes,
+                             including Colors, Back and Styles
+        """
         border = self._parse_border(border)
         width = resolve_width(width)
 
@@ -131,6 +151,7 @@ class PanelBase(ABC):
         return f"{border} {indent}{line.ljust(width - len(indent))} {border}"
 
     def __str__(self) -> str:
+        """Return a human-readable string representation of the panel."""
         return (
             f"{self.header}\n"
             f"{self.content}\n"
@@ -138,6 +159,11 @@ class PanelBase(ABC):
         )
 
     def __repr__(self) -> str:
+        """Return an unambiguous string representation of the panel for debugging.
+
+        The representation includes all non-private attributes of the panel instance,
+        making it useful for reconstructing the object or understanding its current state.
+        """
         content = ", ".join(f"{name}={getattr(self, name)!r}" for name in dir(self) if not name.startswith("_"))
         return f"{self.__class__.__name__}({content})"
 
@@ -425,4 +451,12 @@ if __name__ == "__main__":  # pragma: no cover
         "password": "fake-password",
         "description": "This is a fake description to show you how Outlify can wrap text in the Parameters Panel",
     }
-    print(ParamsPanel(parameters, title="Start Parameters"))
+    print(ParamsPanel(parameters, title="Start Parameters", width=80))
+
+    inner = Panel("it can be done", width=20)
+    text = (
+        "or maybe you want to use a panel inside another panel.\n "
+        "I really do not know why you need this, but okay..\n"
+        f"{inner}"
+    )
+    print(Panel(text, width=80))
