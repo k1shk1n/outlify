@@ -9,10 +9,21 @@ __all__ = ["ListBase", "TitledList"]
 
 
 class ListBase(ABC):
+    """Base class for creating formatted lists with titles."""
+
     def __init__(
             self, content: Sequence[Any], *, width: int | None,
             title: str, title_separator: str, title_style: Sequence[AnsiCodes] | None,
     ) -> None:
+        """Create a base list with customizable title and formatting.
+
+        :param content: element enumeration
+        :param width: maximum width for content (None = auto)
+        :param title: title displayed before elements
+        :param title_separator: separator between title and content
+        :param title_style: enumeration of title styles. Any class inherited from AnsiCodes,
+                            including Colors, Back and Styles
+        """
         self.width = resolve_width(width)
         title_style = parse_styles(title_style)
         title_reset = get_reset_by_style(title_style)
@@ -35,11 +46,17 @@ class ListBase(ABC):
         return [str(elem) for elem in content]
 
     def __str__(self) -> str:
+        """Return a human-readable string representation of the panel."""
         if len(self.content) == 0:
             return self.title
         return self.title_separator.join((self.title, self.content))
 
     def __repr__(self) -> str:
+        """Return an unambiguous string representation of the panel for debugging.
+
+        The representation includes all non-private attributes of the panel instance,
+        making it useful for reconstructing the object or understanding its current state.
+        """
         content = ", ".join(f"{name}={getattr(self, name)!r}" for name in dir(self) if not name.startswith("_"))
         return f"{self.__class__.__name__}({content})"
 
