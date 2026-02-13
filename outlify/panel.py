@@ -425,4 +425,12 @@ if __name__ == "__main__":  # pragma: no cover
         "password": "fake-password",
         "description": "This is a fake description to show you how Outlify can wrap text in the Parameters Panel",
     }
-    print(ParamsPanel(parameters, title="Start Parameters"))
+    print(ParamsPanel(parameters, title="Start Parameters", width=80))
+
+    inner = Panel("it can be done", width=20)
+    text = (
+        "or maybe you want to use a panel inside another panel.\n "
+        "I really do not know why you need this, but okay..\n"
+        f"{inner}"
+    )
+    print(Panel(text, width=80))
