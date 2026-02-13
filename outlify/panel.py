@@ -8,7 +8,7 @@ from outlify._ansi import AnsiCodes
 from outlify._utils import get_reset_by_style, parse_styles, parse_title_align, resolve_width
 from outlify.style import Align, BorderStyle
 
-__all__ = ["Panel", "ParamsPanel"]
+__all__ = ["PanelBase", "Panel", "ParamsPanel"]
 
 
 class PanelBase(ABC):

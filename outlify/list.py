@@ -5,7 +5,7 @@ from typing import Any
 from outlify._utils import get_reset_by_style, parse_styles, resolve_width
 from outlify.style import AnsiCodes
 
-__all__ = ["TitledList"]
+__all__ = ["ListBase", "TitledList"]
 
 
 class ListBase(ABC):
